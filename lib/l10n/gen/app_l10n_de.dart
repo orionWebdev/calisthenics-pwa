@@ -6044,4 +6044,17 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get subpageKickerZones => 'CARDIO · ZONEN';
+
+  @override
+  String runnerHistoryShow(String exercise) {
+    return 'Frühere Sätze zeigen: $exercise';
+  }
+
+  @override
+  String runnerHistoryHide(String exercise) {
+    return 'Frühere Sätze ausblenden: $exercise';
+  }
+
+  @override
+  String get runnerHistoryTitle => 'FRÜHERE SÄTZE';
 }

@@ -8833,6 +8833,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'CARDIO · ZONEN'**
   String get subpageKickerZones;
+
+  /// Runner · Satzhistorie, Knopf zu (23.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'Frühere Sätze zeigen: {exercise}'**
+  String runnerHistoryShow(String exercise);
+
+  /// Runner · Satzhistorie, Knopf offen
+  ///
+  /// In de, this message translates to:
+  /// **'Frühere Sätze ausblenden: {exercise}'**
+  String runnerHistoryHide(String exercise);
+
+  /// Runner · Satzhistorie, Kopf der Liste
+  ///
+  /// In de, this message translates to:
+  /// **'FRÜHERE SÄTZE'**
+  String get runnerHistoryTitle;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

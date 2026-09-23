@@ -8980,7 +8980,7 @@
   "@briefingSnackWeekB": {
     "description": "briefing.snack.week_b"
   },
-  "briefingTitle": "Trainings­angaben",
+  "briefingTitle": "Trainings\u00ADangaben",
   "@briefingTitle": {
     "description": "briefing.title"
   },
@@ -9148,5 +9148,27 @@
   "subpageKickerZones": "CARDIO · ZONEN",
   "@subpageKickerZones": {
     "description": "Board 18b · C7, Kicker im Unterseitenkopf"
+  },
+  "runnerHistoryShow": "Frühere Sätze zeigen: {exercise}",
+  "@runnerHistoryShow": {
+    "description": "Runner · Satzhistorie, Knopf zu (23.09.2026)",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "runnerHistoryHide": "Frühere Sätze ausblenden: {exercise}",
+  "@runnerHistoryHide": {
+    "description": "Runner · Satzhistorie, Knopf offen",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "runnerHistoryTitle": "FRÜHERE SÄTZE",
+  "@runnerHistoryTitle": {
+    "description": "Runner · Satzhistorie, Kopf der Liste"
   }
 }

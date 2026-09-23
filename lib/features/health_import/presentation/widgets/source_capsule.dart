@@ -106,12 +106,12 @@ class _SourceCapsuleState extends ConsumerState<SourceCapsule> {
 
     final explain = _explainLoad(l10n, session, measured);
 
-    // Aufklappen ist ein Erscheinen aus eigener Handlung: einmal je Besuch
-    // die Lichtkante (Board 18b, C6). Zuklappen hat keine.
+    // Aufklappen ist ein Erscheinen aus eigener Handlung: die Lichtkante,
+    // **bei jedem Öffnen** (entschieden am 23.09.2026, gegen Board 18b C6).
+    // Zuklappen hat keine.
     return AtemEdgeSweep(
       trigger: _open,
       when: _open,
-      edgeKey: #sourceCapsule,
       radius: 16,
       child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

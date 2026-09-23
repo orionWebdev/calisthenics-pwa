@@ -6189,5 +6189,27 @@
   "subpageKickerZones": "CARDIO · ZONES",
   "@subpageKickerZones": {
     "description": "Board 18b · C7, Kicker im Unterseitenkopf"
+  },
+  "runnerHistoryShow": "Show earlier sets: {exercise}",
+  "@runnerHistoryShow": {
+    "description": "Runner · Satzhistorie, Knopf zu (23.09.2026)",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "runnerHistoryHide": "Hide earlier sets: {exercise}",
+  "@runnerHistoryHide": {
+    "description": "Runner · Satzhistorie, Knopf offen",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "runnerHistoryTitle": "EARLIER SETS",
+  "@runnerHistoryTitle": {
+    "description": "Runner · Satzhistorie, Kopf der Liste"
   }
 }

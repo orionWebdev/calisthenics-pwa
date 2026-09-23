@@ -6037,4 +6037,17 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get subpageKickerZones => 'CARDIO · ZONES';
+
+  @override
+  String runnerHistoryShow(String exercise) {
+    return 'Show earlier sets: $exercise';
+  }
+
+  @override
+  String runnerHistoryHide(String exercise) {
+    return 'Hide earlier sets: $exercise';
+  }
+
+  @override
+  String get runnerHistoryTitle => 'EARLIER SETS';
 }

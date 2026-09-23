@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../l10n/gen/app_l10n.dart';
 import '../theme/theme.dart';
+import 'atem_answer.dart' show AtemEdgeSweep;
 import 'atem_tappable.dart';
 
 /// Kopf eines Blocks mit **aufklappbarer Erklärung**.
@@ -116,11 +117,18 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
     );
   }
 
+  // Die Erklärung klappt mit der Lichtkante auf, bei jedem Öffnen
+  // (entschieden am 23.09.2026, gegen Board 18b V3 — dort war Hilfe „keine
+  // Neuigkeit").
   Widget _body(BuildContext context) => Padding(
         // Oben nichts: Den Abstand zum Titel setzt bereits die Kopfzeile,
         // damit offen und zugeklappt gleich weit vom Titel wegstehen.
         padding: const EdgeInsets.only(bottom: 4),
-        child: Container(
+        child: AtemEdgeSweep(
+          trigger: true,
+          onMount: true,
+          radius: AtemRadii.iconBox,
+          child: Container(
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
           decoration: BoxDecoration(
@@ -145,7 +153,7 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
               ],
             ),
           ),
-        ),
+        ),)
       );
 
   Widget _headRow(

@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes snackIn{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes entryIn0{from{opacity:0;transform:translateY(-6px) scale(0.98)}to{opacity:1;transform:none}}
+@keyframes entryIn1{from{opacity:0;transform:translateY(-6px) scale(0.98)}to{opacity:1;transform:none}}
+@keyframes scanA{0%{transform:translateX(-120%);opacity:0}15%{opacity:1}100%{transform:translateX(320%);opacity:0}}
+@keyframes scanB{0%{transform:translateX(-120%);opacity:0}15%{opacity:1}100%{transform:translateX(320%);opacity:0}}
+@keyframes todayIn0{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes todayIn1{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes auroraDrift{0%{transform:translate3d(-5%,0,0) rotate(0deg)}50%{transform:translate3d(5%,8px,0) rotate(6deg)}100%{transform:translate3d(-5%,0,0) rotate(0deg)}}
+@keyframes errFlicker{0%,100%{opacity:1}20%{opacity:.35}40%{opacity:1}60%{opacity:.6}80%{opacity:1}}
+@keyframes flipMove{0%{transform:translateY(0);opacity:0}6%,22%{transform:translateY(0);opacity:1}48%,86%{transform:translateY(120px);opacity:1}100%{transform:translateY(120px);opacity:0}}
+@keyframes flipScan{0%,48%{transform:translateX(-120%);opacity:0}52%{opacity:1}72%,100%{transform:translateX(320%);opacity:0}}
+@keyframes dragMove{0%{transform:translateY(0) scale(1);box-shadow:0 0 0 rgba(0,0,0,0);opacity:0}6%,16%{transform:translateY(0) scale(1);box-shadow:0 0 0 rgba(0,0,0,0);opacity:1}24%{transform:translateY(0) scale(1.03);box-shadow:0 12px 28px rgba(0,0,0,0.6)}56%{transform:translateY(120px) scale(1.03);box-shadow:0 12px 28px rgba(0,0,0,0.6)}64%,88%{transform:translateY(120px) scale(1);box-shadow:0 0 0 rgba(0,0,0,0);opacity:1}100%{transform:translateY(120px) scale(1);opacity:0}}
+@keyframes dropLine{0%,34%{opacity:0}40%,58%{opacity:1}64%,100%{opacity:0}}
+@keyframes createIn{0%,14%{max-height:0;opacity:0;transform:translateY(-6px)}34%,88%{max-height:64px;opacity:1;transform:none}100%{max-height:64px;opacity:0}}
+@keyframes createScan{0%,34%{transform:translateX(-120%);opacity:0}38%{opacity:1}60%,100%{transform:translateX(320%);opacity:0}}
+@keyframes midOld{0%,40%{opacity:1;transform:none}46%,94%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:none}}
+@keyframes midNew{0%,44%{opacity:0;transform:translateY(8px)}54%,90%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateY(8px)}}
+@keyframes midRing{0%,42%{transform:translateX(0)}52%,92%{transform:translateX(34px)}100%{transform:translateX(0)}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 19 · WOCHENPLANUNG 2 VON 3</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2;max-width:1100px">Die Woche von Hand — sieben Tage untereinander, und ein Heute, das nur abgeleitet wird</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:920px;line-height:1.7;text-wrap:pretty">Die Planungsseite ist das Werkzeug, mit dem jemand seine übliche Woche selbst festlegt: welche Art an welchem Wochentag, auf Wunsch mit einem seiner Pläne. Das Widget im Hybrid-Tab beantwortet daraus „Was wird heute trainiert?" — für Kraft und Cardio, aus derselben Ableitung, die auch der Kraft-Tab liest. Die App schlägt hier nichts vor, füllt nichts vor und kommentiert keine Menge.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Nur Tokens aus atem_theme.dart</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Cyan = Handlung · #AB6BF0 = Ort · Amber / #7A2BDB = Spur</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp · Text ≥ 12 sp · 200 % auf 320 dp</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">0 × Gradient-Karte auf der Seite · 1 × BackdropFilter</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Verschieben ohne Ziehen · Ziehen nur zusätzlich</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:5px 12px">Kein Vorschlag · kein Vorbelegen · kein „verpasst" · kein Badge</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">LEITSATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1040px;text-wrap:pretty">Die Woche ist ein Vorhaben in Wochentagen, das jemand selbst hinschreibt. „Heute" wird daraus gelesen, nie angelegt; was geplant und nicht trainiert ist, sieht aus wie jeder andere Tag; und eine Lücke ist keine Aussage — nur „Frei" ist eine.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:1040px">Drei Folgen. <strong style="color:#CDD3EA">Erste:</strong> Plan und Ist werden nie abgeglichen, nur nebeneinander gestellt — kein Häkchen am Eintrag, keine Ampel am Tag. <strong style="color:#CDD3EA">Zweite:</strong> eine Ableitung, <code style="color:#CDD3EA">todayPlan(datum)</code>, speist Hybrid-Widget und Kraft-Tab; der Kraft-Tab filtert nur. <strong style="color:#CDD3EA">Dritte:</strong> das Briefing ist Bezug, nie Vorlage — was dort steht, steht oben als Zeile, nicht als Eintrag in der Woche.</div>
+</div>
+
+<div data-screen-label="A Interaktiv" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A · PLANUNGSSEITE, WIDGET UND KRAFT-TAB — EIN DATENSTAND, LIVE</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Artboards 1 : 1 in dp bei 360 dp. <strong style="color:#CDD3EA">A1 ist bedienbar</strong>: Plus am Tag legt an, Eintrag antippen verschiebt, ändert oder entfernt; Rückgängig steht 6 s. <strong style="color:#CDD3EA">A2 und A3 lesen denselben Stand</strong> — ändere Mittwoch und sieh beide mitgehen. „Mitternacht" schaltet den Tag weiter. Tweaks: Startzustand, Speicherfehler simulieren, Animationen reduzieren.</div>
+<div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin-top:18px">
+
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A1 · PLANUNGSSEITE · INTERAKTIV</div>
+<sc-for list="{{ livePages }}" as="p" hint-placeholder-count="1">
+<div style="margin-top:8px;position:relative;width:360px;height:760px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="position:absolute;inset:0;overflow-y:auto">
+<div style="position:sticky;top:0;z-index:2;height:56px;display:flex;align-items:center;padding:0 4px;border-bottom:1px solid #232334;background:rgba(5,5,7,0.82);backdrop-filter:blur(14px)">
+<span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#AB6BF0"><span style="width:6px;height:6px;border-radius:50%;background:#AB6BF0;box-shadow:0 0 8px #AB6BF0"></span>HYBRID · WOCHE</span>
+</div>
+
+<div style="position:relative;isolation:isolate;padding:18px 16px 0">
+<div aria-hidden="true" style="position:absolute;left:-50px;right:-50px;top:-64px;height:200px;z-index:-1;pointer-events:none;background:radial-gradient(110px 70px at 22% 58%, rgba(0,242,254,0.16), rgba(0,242,254,0) 70%), radial-gradient(150px 80px at 78% 42%, rgba(171,107,240,0.20), rgba(171,107,240,0) 70%), radial-gradient(140px 70px at 50% 88%, rgba(122,43,219,0.26), rgba(122,43,219,0) 70%);animation:{{ p.aurora }}"></div>
+<div style="font-size:22px;font-weight:600;line-height:1.25">Deine Woche</div>
+<div style="margin-top:6px;font-size:13px;color:#94A3B8;line-height:1.5">{{ p.sub }}</div>
+<sc-if value="{{ p.hasMeta }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ p.meta }}</div></sc-if>
+</div>
+<div style="padding:14px 16px 0">
+<div onClick="{{ noop }}" role="button" style="min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:10px 4px 10px 12px;display:flex;align-items:center;gap:12px;box-sizing:border-box;cursor:pointer;transition:transform 200ms ease-out, box-shadow 200ms ease-out" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.3)">
+<span style="width:36px;height:36px;border-radius:10px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 3.5h6v3H9zM7 5H5.5v15.5h13V5H17M9 11h6M9 15h4" stroke="#CDD3EA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#94A3B8;line-height:1.4">Trainingsangaben</span><span style="font-size:14px;line-height:1.4;color:{{ p.briefC }}">{{ p.brief }}</span><sc-if value="{{ p.hasBriefMeta }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;color:#94A3B8;line-height:1.5">{{ p.briefMeta }}</span></sc-if></div>
+<span style="width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+</div>
+</div>
+<sc-if value="{{ p.hasAB }}" hint-placeholder-val="{{ false }}">
+<div style="padding:14px 16px 0">
+<div role="radiogroup" aria-label="Welche Woche" style="display:flex;flex-wrap:wrap;gap:4px;padding:4px;background:#0B0B0E;border:1px solid #232334;border-radius:16px">
+<sc-for list="{{ p.abOpts }}" as="o" hint-placeholder-count="2"><div onClick="{{ o.onClick }}" role="radio" aria-checked="{{ o.aria }}" style="flex:1 1 120px;min-height:48px;border-radius:12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;background:{{ o.bg }};border:1.5px solid {{ o.bd }};font-size:14px;font-weight:600;color:{{ o.c }};cursor:pointer;transition:background 240ms cubic-bezier(0.22,1,0.36,1), border-color 240ms cubic-bezier(0.22,1,0.36,1)" style-active="transform:scale(0.97)">{{ o.label }}</div></sc-for>
+</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ p.abMeta }}</div>
+</div>
+</sc-if>
+<div style="padding:14px 16px 0"><div style="background:#14141D;border:1px solid #232334;border-radius:20px;overflow:hidden">
+<div style="padding:12px 14px 2px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ p.weekHead }}</div>
+<sc-for list="{{ p.days }}" as="d" hint-placeholder-count="7">
+<div role="group" aria-label="{{ d.a11y }}" style="border-top:1px solid {{ d.line }};padding:2px 4px 10px 14px">
+<div style="display:flex;align-items:center;gap:8px;min-height:48px">
+<span style="flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px"><span style="font-size:14px;font-weight:600;line-height:1.35">{{ d.name }}</span><sc-if value="{{ d.isToday }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:#FFFFFF;border:1px solid #CDD3EA;border-radius:30px;padding:2px 8px">HEUTE</span></sc-if></span>
+<span onClick="{{ d.onAdd }}" role="button" aria-label="{{ d.addLabel }}" style="width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:14px;transition:transform 200ms ease-out, box-shadow 200ms ease-out" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.35)"><span style="width:32px;height:32px;border-radius:10px;border:1.5px solid rgba(0,242,254,0.45);box-sizing:border-box;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#00F2FE" stroke-width="2.2" stroke-linecap="round"></path></svg></span></span>
+</div>
+<sc-if value="{{ d.hasEntries }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;padding-right:10px">
+<sc-for list="{{ d.entries }}" as="e" hint-placeholder-count="1">
+<div onClick="{{ e.onClick }}" role="button" aria-label="{{ e.a11y }}" style="position:relative;min-height:56px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:8px 2px 8px 10px;display:flex;align-items:center;gap:10px;box-sizing:border-box;cursor:pointer;transition:transform 200ms ease-out, box-shadow 200ms ease-out;animation:{{ e.anim }}" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.3)">
+<span aria-hidden="true" style="position:absolute;left:14px;right:14px;top:-1px;height:2px;overflow:hidden;pointer-events:none"><span style="position:absolute;top:0;left:0;width:34%;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(0,242,254,0),#00F2FE,rgba(0,242,254,0));box-shadow:0 0 10px #00F2FE;opacity:0;animation:{{ e.scan }}"></span></span>
+<span style="width:36px;height:36px;border-radius:10px;background:{{ e.bg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="{{ e.icon }}" stroke="{{ e.ic }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600;line-height:1.35">{{ e.title }}</span><span style="font-size:12px;color:#94A3B8;line-height:1.45">{{ e.meta }}</span><sc-if value="{{ e.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#CDD3EA;line-height:1.45">{{ e.note }}</span></sc-if></div>
+<span style="width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke="#00F2FE" stroke-width="3" stroke-linecap="round"></path></svg></span>
+</div>
+</sc-for>
+</div></sc-if>
+<sc-if value="{{ d.hasFact }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px;display:flex;align-items:flex-start;gap:8px;padding-right:10px"><span style="width:6px;height:6px;border-radius:50%;background:#CDD3EA;margin-top:6px;flex:none"></span><span style="font-size:12px;color:#94A3B8;line-height:1.5">{{ d.fact }}</span></div></sc-if>
+<sc-if value="{{ d.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin:8px 10px 0 0;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.4);border-radius:14px;padding:10px 12px;animation:{{ errAnim }}"><div style="display:flex;align-items:flex-start;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" style="flex:none;margin-top:2px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><span style="font-size:12.5px;color:#F02277;line-height:1.5">{{ d.errText }}</span></div><span onClick="{{ d.onRetry }}" role="button" style="min-height:44px;display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#00F2FE;cursor:pointer;padding-left:22px">Erneut versuchen</span></div></sc-if>
+</div>
+</sc-for>
+</div></div>
+<sc-if value="{{ p.hasSum }}" hint-placeholder-val="{{ false }}">
+<div style="padding:14px 16px 0"><div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ p.sumHead }}</div>
+<sc-for list="{{ p.sum }}" as="s" hint-placeholder-count="2"><div style="margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:28px;height:28px;border-radius:8px;background:{{ s.bg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="{{ s.icon }}" stroke="{{ s.ic }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:13.5px;color:#FFFFFF">{{ s.a }}</span><span style="font-size:12px;color:#94A3B8">{{ s.b }}</span></div></sc-for>
+</div></div>
+</sc-if>
+<div style="padding:22px 16px 110px;display:flex;flex-direction:column;gap:4px">
+<div style="height:1px;background:#232334;margin-bottom:10px"></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8;line-height:1.6">{{ p.used }}</div>
+<sc-if value="{{ p.hasAny }}" hint-placeholder-val="{{ false }}"><div onClick="{{ p.onClear }}" role="button" style="align-self:flex-start;min-height:48px;display:flex;align-items:center;font-size:13px;font-weight:600;color:#F02277;cursor:pointer" style-active="transform:scale(0.97)">Woche leeren</div></sc-if>
+</div>
+</div>
+
+<sc-for list="{{ snacks }}" as="s" hint-placeholder-count="0">
+<div role="status" style="position:absolute;left:12px;right:12px;bottom:14px;z-index:4;min-height:52px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:4px 6px 4px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,0.6);animation:{{ snackAnim }}">
+<span style="flex:1;font-size:13px;color:#CDD3EA;line-height:1.45">{{ s.text }}</span>
+<sc-if value="{{ s.canUndo }}" hint-placeholder-val="{{ true }}"><span onClick="{{ undo }}" role="button" style="min-height:48px;display:flex;align-items:center;padding:0 8px;font-size:13px;font-weight:600;color:#00F2FE;cursor:pointer">Rückgängig</span></sc-if>
+</div>
+</sc-for>
+
+<sc-for list="{{ liveSheets }}" as="sh" hint-placeholder-count="0">
+<div style="position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-end">
+<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(5,5,7,0.72);animation:{{ scrimAnim }}"></div>
+<div role="dialog" aria-label="{{ sh.title }}" style="position:relative;max-height:86%;overflow-y:auto;background:#14141D;border-top:1px solid #232334;border-radius:24px 24px 0 0;padding:8px 16px 20px;box-sizing:border-box;animation:{{ sheetAnim }}">
+<div style="width:36px;height:4px;border-radius:2px;background:#232334;margin:0 auto 14px"></div>
+<div style="font-size:17px;font-weight:600;line-height:1.35">{{ sh.title }}</div>
+<sc-if value="{{ sh.hasSub }}" hint-placeholder-val="{{ true }}"><div style="margin-top:4px;font-size:12.5px;color:#94A3B8;line-height:1.5">{{ sh.sub }}</div></sc-if>
+<sc-for list="{{ sh.groups }}" as="g" hint-placeholder-count="2">
+<div style="margin-top:16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.06em;color:#94A3B8;margin-bottom:8px">{{ g.label }}</div>
+<sc-if value="{{ g.isTiles }}" hint-placeholder-val="{{ false }}"><div role="radiogroup" style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3"><div onClick="{{ o.onClick }}" role="radio" aria-checked="{{ o.aria }}" aria-disabled="{{ o.ariaDis }}" style="flex:1 1 88px;min-height:88px;padding:10px;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:8px;border-radius:14px;background:{{ o.bg }};border:1.5px {{ o.bs }} {{ o.bd }};cursor:{{ o.cur }};transition:transform 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.35)"><span style="width:36px;height:36px;border-radius:10px;background:{{ o.iconBg }};display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="{{ o.icon }}" stroke="{{ o.iconC }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:13.5px;font-weight:{{ o.fw }};color:{{ o.txt }};line-height:1.3">{{ o.label }}</span><sc-if value="{{ o.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#94A3B8;line-height:1.35">{{ o.sub }}</span></sc-if></div></sc-for></div></sc-if>
+<sc-if value="{{ g.isRadio }}" hint-placeholder-val="{{ false }}"><div role="radiogroup" style="display:flex;flex-direction:column;gap:8px"><sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3"><div onClick="{{ o.onClick }}" role="radio" aria-checked="{{ o.aria }}" style="min-height:52px;display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:14px;box-sizing:border-box;background:{{ o.bg }};border:1.5px solid {{ o.bd }};cursor:pointer;transition:transform 200ms ease-out, box-shadow 200ms ease-out" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.35)"><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;line-height:1.35;color:{{ o.txt }};font-weight:{{ o.fw }}">{{ o.label }}</span><span style="font-size:12px;color:#94A3B8;line-height:1.4">{{ o.sub }}</span></span><span style="width:20px;height:20px;border-radius:50%;box-sizing:border-box;border:2px solid {{ o.ring }};display:flex;align-items:center;justify-content:center;flex:none"><span style="width:10px;height:10px;border-radius:50%;background:#00F2FE;transform:scale({{ o.dot }});transition:transform 220ms cubic-bezier(0.34,1.56,0.64,1)"></span></span></div></sc-for></div></sc-if>
+<sc-if value="{{ g.isChips }}" hint-placeholder-val="{{ false }}"><div role="radiogroup" style="display:flex;flex-wrap:wrap;gap:8px;padding:0 3px"><sc-for list="{{ g.options }}" as="o" hint-placeholder-count="4"><div onClick="{{ o.onClick }}" role="radio" aria-checked="{{ o.aria }}" aria-disabled="{{ o.ariaDis }}" style="position:relative;min-width:48px;min-height:48px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:14px;background:{{ o.bg }};border:1.5px {{ o.bs }} {{ o.bd }};font-size:13.5px;font-weight:{{ o.fw }};color:{{ o.txt }};cursor:{{ o.cur }};transition:transform 200ms ease-out, box-shadow 200ms ease-out" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.35)">{{ o.label }}<span style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#00F2FE;display:flex;align-items:center;justify-content:center;transform:scale({{ o.dot }});transition:transform 220ms cubic-bezier(0.34,1.56,0.64,1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div></sc-for></div></sc-if>
+<sc-if value="{{ g.isFacts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3"><div style="display:flex;align-items:flex-start;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#CDD3EA;margin-top:8px;flex:none"></span><span style="font-size:13.5px;color:#CDD3EA;line-height:1.55">{{ o.label }}</span></div></sc-for></div></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ sh.hasHint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;font-size:12px;color:#94A3B8;line-height:1.5">{{ sh.hint }}</div></sc-if>
+<sc-if value="{{ sh.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin-top:14px;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.4);border-radius:14px;padding:10px 12px;display:flex;align-items:flex-start;gap:8px;animation:{{ errAnim }}"><svg width="14" height="14" viewBox="0 0 24 24" style="flex:none;margin-top:2px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><span style="font-size:12.5px;color:#F02277;line-height:1.5">{{ sh.err }}</span></div></sc-if>
+<sc-if value="{{ sh.hasPrimary }}" hint-placeholder-val="{{ false }}"><div onClick="{{ sh.onPrimary }}" role="button" aria-disabled="{{ sh.pDis }}" style="margin-top:16px;min-height:52px;border-radius:14px;box-sizing:border-box;border:1.5px solid {{ sh.pBd }};background:{{ sh.pBg }};color:{{ sh.pC }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;cursor:pointer;transition:transform 200ms ease-out, box-shadow 200ms ease-out" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.35)">{{ sh.primary }}</div></sc-if>
+<sc-if value="{{ sh.hasSecondary }}" hint-placeholder-val="{{ false }}"><div onClick="{{ sh.onSecondary }}" role="button" style="margin-top:10px;min-height:48px;display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#00F2FE;cursor:pointer" style-active="transform:scale(0.97)">{{ sh.secondary }}</div></sc-if>
+<sc-if value="{{ sh.hasDangerBtn }}" hint-placeholder-val="{{ false }}"><div onClick="{{ sh.onDanger }}" role="button" style="margin-top:10px;min-height:52px;border-radius:14px;box-sizing:border-box;border:1.5px solid rgba(240,34,119,0.5);background:rgba(240,34,119,0.08);color:#F02277;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;cursor:pointer" style-active="transform:scale(0.97)">{{ sh.danger }}</div></sc-if>
+<sc-if value="{{ sh.hasDanger }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px"><div onClick="{{ sh.onDanger }}" role="button" style="min-height:48px;display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#F02277;cursor:pointer" style-active="transform:scale(0.97)">{{ sh.danger }}</div></div></sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-for>
+<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+<span onClick="{{ midnight }}" role="button" style="min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:30px;border:1px solid rgba(0,242,254,0.45);background:rgba(0,242,254,0.08);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.08em;color:#00F2FE;cursor:pointer" style-active="transform:scale(0.97)">MITTERNACHT →</span>
+<span onClick="{{ reset }}" role="button" style="min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:30px;border:1px solid #232334;background:#14141D;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.08em;color:#94A3B8;cursor:pointer" style-active="transform:scale(0.97)">ZURÜCKSETZEN</span>
+</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">{{ modeLabel }}</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Jede Handlung ist sofort geschrieben — kein Speichern-Knopf auf der Seite. Der einzige Knopf „Hinzufügen" sitzt im Blatt, weil ein Eintrag aus mehreren Angaben besteht. Mit Speicherfehler: der Eintrag erscheint, springt nach 650 ms zurück, das Blatt öffnet sich mit denselben Werten und dem Grund.</div>
+</div>
+
+<div style="width:362px;flex:none;display:flex;flex-direction:column;gap:28px">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A2 · HYBRID-WIDGET · LIEST A1</div>
+<sc-for list="{{ liveWidgets }}" as="w" hint-placeholder-count="1">
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden;padding:14px 16px 18px;box-sizing:border-box">
+<div style="display:flex;align-items:center;gap:6px;min-height:48px">
+<span style="flex:1;font-size:20px;font-weight:700">Hybrid</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;color:#94A3B8">{{ w.date }}</span>
+<span role="button" aria-label="Deine Woche öffnen" style="width:48px;height:48px;margin-right:-8px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v14H4zM8 3v5M16 3v5M4 10h16" stroke="#00F2FE" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+</div>
+<sc-if value="{{ w.none }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;display:flex;flex-direction:column;gap:10px"><div style="min-height:72px;border:1px dashed #232334;border-radius:20px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:#94A3B8">BEREITSCHAFT · BOARD 11</div><div style="min-height:96px;border:1px dashed #232334;border-radius:20px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:#94A3B8">VERHÄLTNIS · BOARD 11</div></div></sc-if>
+<sc-if value="{{ w.ok }}" hint-placeholder-val="{{ true }}">
+<div role="group" aria-label="{{ w.a11y }}" style="margin-top:6px;background:#14141D;border:1px solid #232334;border-radius:20px;overflow:hidden">
+<div style="padding:14px 14px 0;animation:{{ w.todayAnim }}">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:#94A3B8">{{ w.kicker }}</span><sc-if value="{{ w.hasAB }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#CDD3EA;border:1px solid #232334;border-radius:30px;padding:2px 8px">{{ w.ab }}</span></sc-if></div>
+<sc-if value="{{ w.hasToday }}" hint-placeholder-val="{{ true }}"><div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ w.today }}" as="e" hint-placeholder-count="1"><div style="min-height:56px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:8px 12px 8px 10px;display:flex;align-items:center;gap:10px;box-sizing:border-box"><span style="width:36px;height:36px;border-radius:10px;background:{{ e.bg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="{{ e.icon }}" stroke="{{ e.ic }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600;line-height:1.35">{{ e.title }}</span><span style="font-size:12px;color:#94A3B8;line-height:1.45">{{ e.meta }}</span><sc-if value="{{ e.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#CDD3EA;line-height:1.45">{{ e.note }}</span></sc-if><sc-if value="{{ e.hasSrc }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#94A3B8">{{ e.srcTxt }}</span></sc-if></div></div></sc-for>
+</div>
+<sc-if value="{{ w.hasSource }}" hint-placeholder-val="{{ true }}"><div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ w.source }}</div></sc-if>
+</sc-if>
+<sc-if value="{{ w.hasFact }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px;display:flex;align-items:flex-start;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:#CDD3EA;margin-top:6px;flex:none"></span><span style="font-size:12px;color:#94A3B8;line-height:1.5">{{ w.fact }}</span></div></sc-if>
+</div>
+<sc-if value="{{ w.hasWeek }}" hint-placeholder-val="{{ true }}"><div style="padding:12px 14px 0"><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+<sc-for list="{{ w.week }}" as="c" hint-placeholder-count="7"><div aria-label="{{ c.a11y }}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0 8px;border-radius:12px;box-sizing:border-box;border:1.5px solid {{ c.bd }};background:{{ c.bg }};transition:border-color 240ms cubic-bezier(0.22,1,0.36,1), background 240ms cubic-bezier(0.22,1,0.36,1)"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:{{ c.lc }};font-weight:{{ c.fw }}">{{ c.d }}</span><div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-height:20px"><sc-for list="{{ c.pips }}" as="x" hint-placeholder-count="1"><span style="width:20px;height:20px;border-radius:6px;background:{{ x.bg }};display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="{{ x.icon }}" stroke="{{ x.ic }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></sc-for></div></div></sc-for>
+</div></div></sc-if>
+<div onClick="{{ noop }}" role="button" aria-label="Deine Woche öffnen" style="margin-top:12px;min-height:52px;border-top:1px solid #232334;display:flex;align-items:center;padding:0 6px 0 14px;cursor:pointer" style-active="transform:scale(0.97)"><span style="flex:1;font-size:13.5px;color:#CDD3EA">Deine Woche</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Leer (nie geplant) rendert das Widget nicht — der Tab beginnt mit Bereitschaft. Der Weg zur Planung ist dann das Kalender-Symbol im Kopf, das immer steht.</div>
+</div>
+
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A3 · KRAFT-TAB · STARTBLOCK-KOPF · LIEST A1</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;padding:16px;box-sizing:border-box">
+<div style="border-radius:20px;padding:1.5px;background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE)"><div style="border-radius:18.5px;background:#14141D;overflow:hidden">
+<div style="padding:14px 14px 0"><div style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:{{ lk.dot }};box-shadow:{{ lk.glow }};flex:none"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:{{ lk.kc }}">{{ lk.kicker }}</span></div><div style="margin-top:8px;font-size:18px;font-weight:600;line-height:1.3">{{ lk.title }}</div><div style="margin-top:4px;font-size:12.5px;color:#94A3B8;line-height:1.45">{{ lk.meta }}</div></div>
+<div style="padding:14px"><div style="height:52px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;letter-spacing:0.08em">{{ lk.cta }}</div></div>
+</div></div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Dieselbe Liste, nur Kraft. Ist heute Cardio oder „Frei", schweigt der Kraft-Tab darüber und zeigt „Zuletzt" (Board 17) — er widerspricht dem Widget nicht, er sagt nur weniger.</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="B Seite Zustände" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · PLANUNGSSEITE — ZUSTÄNDE, VIER MENSCHEN, ZWEI VARIANTEN</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Heute ist in allen Artboards <strong style="color:#CDD3EA">Mittwoch, 23. September (KW 39)</strong>. Statisch, volle Höhe. Die Wochenform bleibt in jedem Zustand dieselbe: sieben Abschnitte, Tagesname ausgeschrieben, ein Plus je Tag — mehr Einträge heisst mehr Zeilen, nie schmalere Spalten.</div>
+<div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin-top:18px">
+<sc-for list="{{ pages }}" as="p" hint-placeholder-count="6">
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:{{ p.capC }}">{{ p.cap }}</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="height:56px;display:flex;align-items:center;padding:0 4px;border-bottom:1px solid #232334">
+<span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#AB6BF0"><span style="width:6px;height:6px;border-radius:50%;background:#AB6BF0;box-shadow:0 0 8px #AB6BF0"></span>HYBRID · WOCHE</span>
+</div>
+<div style="padding:18px 16px 0">
+<div style="font-size:22px;font-weight:600;line-height:1.25">Deine Woche</div>
+<div style="margin-top:6px;font-size:13px;color:#94A3B8;line-height:1.5">{{ p.sub }}</div>
+<sc-if value="{{ p.hasMeta }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ p.meta }}</div></sc-if>
+</div>
+<div style="padding:14px 16px 0">
+<div style="min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:10px 4px 10px 12px;display:flex;align-items:center;gap:12px;box-sizing:border-box">
+<span style="width:36px;height:36px;border-radius:10px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 3.5h6v3H9zM7 5H5.5v15.5h13V5H17M9 11h6M9 15h4" stroke="#CDD3EA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#94A3B8;line-height:1.4">Trainingsangaben</span><span style="font-size:14px;line-height:1.4;color:{{ p.briefC }}">{{ p.brief }}</span><sc-if value="{{ p.hasBriefMeta }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;color:#94A3B8;line-height:1.5">{{ p.briefMeta }}</span></sc-if></div>
+<span style="width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+</div>
+</div>
+<sc-if value="{{ p.hasAB }}" hint-placeholder-val="{{ false }}">
+<div style="padding:14px 16px 0">
+<div role="radiogroup" style="display:flex;flex-wrap:wrap;gap:4px;padding:4px;background:#0B0B0E;border:1px solid #232334;border-radius:16px">
+<sc-for list="{{ p.abOpts }}" as="o" hint-placeholder-count="2"><div role="radio" aria-checked="{{ o.aria }}" style="flex:1 1 120px;min-height:48px;border-radius:12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;background:{{ o.bg }};border:1.5px solid {{ o.bd }};font-size:14px;font-weight:600;color:{{ o.c }}">{{ o.label }}</div></sc-for>
+</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ p.abMeta }}</div>
+</div>
+</sc-if>
+<sc-if value="{{ p.loading }}" hint-placeholder-val="{{ false }}">
+<div style="padding:14px 16px 0"><div role="status" aria-label="Woche wird geladen" style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:4px 14px">
+<sc-for list="{{ skel }}" as="s" hint-placeholder-count="7"><div style="min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid {{ s.line }}"><div style="height:12px;width:{{ s.w }};border-radius:4px;background:#1A1A26;animation:{{ skelAnim }}"></div><div style="width:32px;height:32px;border-radius:10px;background:#1A1A26;margin-right:8px;animation:{{ skelAnim }}"></div></div></sc-for>
+</div></div>
+</sc-if>
+<sc-if value="{{ p.loadErr }}" hint-placeholder-val="{{ false }}">
+<div style="padding:14px 16px 0"><div role="alert" style="background:#14141D;border:1px solid rgba(240,34,119,0.4);border-radius:20px;padding:16px">
+<div style="display:flex;align-items:flex-start;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" style="flex:none;margin-top:3px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><div><div style="font-size:15px;font-weight:600;line-height:1.4">Woche konnte nicht geladen werden.</div><div style="margin-top:4px;font-size:12.5px;color:#CDD3EA;line-height:1.55">Bis sie geladen ist, zeigt die Seite keine Tage — sonst sähe sie leer aus.</div></div></div>
+<div style="margin-top:12px;min-height:48px;border-radius:14px;border:1.5px solid rgba(0,242,254,0.45);background:rgba(0,242,254,0.08);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#00F2FE">Erneut versuchen</div>
+</div></div>
+</sc-if>
+<sc-if value="{{ p.ok }}" hint-placeholder-val="{{ true }}">
+<div style="padding:14px 16px 0"><div style="background:#14141D;border:1px solid #232334;border-radius:20px;overflow:hidden">
+<div style="padding:12px 14px 2px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ p.weekHead }}</div>
+<sc-for list="{{ p.days }}" as="d" hint-placeholder-count="7">
+<div style="border-top:1px solid {{ d.line }};padding:2px 4px 10px 14px">
+<div style="display:flex;align-items:center;gap:8px;min-height:48px">
+<span style="flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px"><span style="font-size:14px;font-weight:600;line-height:1.35">{{ d.name }}</span><sc-if value="{{ d.isToday }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:#FFFFFF;border:1px solid #CDD3EA;border-radius:30px;padding:2px 8px">HEUTE</span></sc-if></span>
+<span style="width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center"><span style="width:32px;height:32px;border-radius:10px;border:1.5px solid rgba(0,242,254,0.45);box-sizing:border-box;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#00F2FE" stroke-width="2.2" stroke-linecap="round"></path></svg></span></span>
+</div>
+<sc-if value="{{ d.hasEntries }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;padding-right:10px">
+<sc-for list="{{ d.entries }}" as="e" hint-placeholder-count="1">
+<div style="min-height:56px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:8px 2px 8px 10px;display:flex;align-items:center;gap:10px;box-sizing:border-box">
+<span style="width:36px;height:36px;border-radius:10px;background:{{ e.bg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="{{ e.icon }}" stroke="{{ e.ic }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600;line-height:1.35">{{ e.title }}</span><span style="font-size:12px;color:#94A3B8;line-height:1.45">{{ e.meta }}</span><sc-if value="{{ e.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#CDD3EA;line-height:1.45">{{ e.note }}</span></sc-if></div>
+<span style="width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke="#00F2FE" stroke-width="3" stroke-linecap="round"></path></svg></span>
+</div>
+</sc-for>
+</div></sc-if>
+<sc-if value="{{ d.hasFact }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px;display:flex;align-items:flex-start;gap:8px;padding-right:10px"><span style="width:6px;height:6px;border-radius:50%;background:#CDD3EA;margin-top:6px;flex:none"></span><span style="font-size:12px;color:#94A3B8;line-height:1.5">{{ d.fact }}</span></div></sc-if>
+<sc-if value="{{ d.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin:8px 10px 0 0;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.4);border-radius:14px;padding:10px 12px"><div style="display:flex;align-items:flex-start;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" style="flex:none;margin-top:2px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><span style="font-size:12.5px;color:#F02277;line-height:1.5">{{ d.errText }}</span></div><span style="min-height:44px;display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#00F2FE;padding-left:22px">Erneut versuchen</span></div></sc-if>
+</div>
+</sc-for>
+</div></div>
+<sc-if value="{{ p.hasSum }}" hint-placeholder-val="{{ false }}">
+<div style="padding:14px 16px 0"><div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ p.sumHead }}</div>
+<sc-for list="{{ p.sum }}" as="s" hint-placeholder-count="2"><div style="margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><span style="width:28px;height:28px;border-radius:8px;background:{{ s.bg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="{{ s.icon }}" stroke="{{ s.ic }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:13.5px;color:#FFFFFF">{{ s.a }}</span><span style="font-size:12px;color:#94A3B8">{{ s.b }}</span></div></sc-for>
+</div></div>
+</sc-if>
+</sc-if>
+<div style="padding:22px 16px 20px;display:flex;flex-direction:column;gap:4px">
+<div style="height:1px;background:#232334;margin-bottom:10px"></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8;line-height:1.6">{{ p.used }}</div>
+<sc-if value="{{ p.hasAny }}" hint-placeholder-val="{{ false }}"><div style="align-self:flex-start;min-height:48px;display:flex;align-items:center;font-size:13px;font-weight:600;color:#F02277">Woche leeren</div></sc-if>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">{{ p.note }}</div>
+</div>
+</sc-for>
+
+<div style="width:322px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">B14 · 200 % SYSTEMSCHRIFT AUF 320 DP</div>
+<div style="margin-top:8px;width:320px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="min-height:64px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:4px;border-bottom:1px solid #232334"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-family:'JetBrains Mono',monospace;font-size:20px;letter-spacing:0.1em;color:#AB6BF0">HYBRID · WOCHE</span></div>
+<div style="padding:18px 16px 0"><div style="font-size:40px;font-weight:600;line-height:1.2">Deine Woche</div><div style="margin-top:8px;font-size:26px;color:#94A3B8;line-height:1.4">Was an welchem Wochentag üblich ist.</div></div>
+<div style="padding:16px 16px 20px"><div style="background:#14141D;border:1px solid #232334;border-radius:20px;overflow:hidden">
+<sc-for list="{{ bigDays }}" as="d" hint-placeholder-count="3">
+<div style="border-top:1px solid {{ d.line }};padding:8px 4px 14px 14px">
+<div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap"><div style="flex:1 1 150px;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:10px"><span style="font-size:28px;font-weight:600;line-height:1.25">{{ d.name }}</span><sc-if value="{{ d.isToday }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:20px;letter-spacing:0.08em;border:1px solid #CDD3EA;border-radius:30px;padding:2px 10px">HEUTE</span></sc-if></div><span style="width:56px;height:56px;flex:none;display:flex;align-items:center;justify-content:center"><span style="width:44px;height:44px;border-radius:12px;border:1.5px solid rgba(0,242,254,0.45);box-sizing:border-box;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#00F2FE" stroke-width="2.2" stroke-linecap="round"></path></svg></span></span></div>
+<sc-for list="{{ d.entries }}" as="e" hint-placeholder-count="1"><div style="margin:10px 10px 0 0;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:10px 4px 12px 12px"><div style="display:flex;align-items:center;justify-content:space-between"><span style="width:48px;height:48px;border-radius:12px;background:{{ e.bg }};display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="{{ e.icon }}" stroke="{{ e.ic }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke="#00F2FE" stroke-width="3" stroke-linecap="round"></path></svg></span></div><div style="margin-top:8px;font-size:28px;font-weight:600;line-height:1.25">{{ e.title }}</div><div style="margin-top:4px;font-size:24px;color:#94A3B8;line-height:1.35">{{ e.meta }}</div></div></sc-for>
+</div>
+</sc-for>
+</div></div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Die senkrechte Woche braucht keinen Umbau, nur zwei Regeln ab <code style="color:#CDD3EA">textScaler &gt; 1,45</code>: <strong style="color:#CDD3EA">die Spurkachel steht über dem Text</strong> (sonst bleiben 120 dp für den Titel), und der Tageskopf darf umbrechen — „HEUTE" rutscht unter den Namen, das Plus bleibt oben rechts. Tagesnamen bleiben ausgeschrieben. Nichts scrollt quer.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="C Blatt" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · DAS BLATT — ANLEGEN, VERSCHIEBEN OHNE ZIEHEN, FEHLER, WOCHE LEEREN</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Ein Blatt für alles, was einen Eintrag betrifft. Es baut nur aus Board-18-Bausteinen: <code style="color:#CDD3EA">AtemAnswerTile</code> für die Art, <code style="color:#CDD3EA">AtemAnswerOption</code> für den Plan, <code style="color:#CDD3EA">AtemAnswerChip</code> für Aktivität, Dauer, Tageszeit und Zieltag. Scrim ohne Blur — der eine BackdropFilter gehört der Kopfleiste.</div>
+<div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin-top:18px">
+<sc-for list="{{ sheets }}" as="sh" hint-placeholder-count="4">
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:{{ sh.capC }}">{{ sh.cap }}</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="position:relative;height:110px;padding:18px 16px 0;box-sizing:border-box"><div style="font-size:22px;font-weight:600">Deine Woche</div><div style="margin-top:6px;font-size:13px;color:#94A3B8">Was an welchem Wochentag üblich ist.</div><div style="position:absolute;inset:0;background:rgba(5,5,7,0.72)"></div></div>
+<div style="background:#14141D;border-top:1px solid #232334;border-radius:24px 24px 0 0;padding:8px 16px 20px">
+<div style="width:36px;height:4px;border-radius:2px;background:#232334;margin:0 auto 14px"></div>
+<div style="font-size:17px;font-weight:600;line-height:1.35">{{ sh.title }}</div>
+<sc-if value="{{ sh.hasSub }}" hint-placeholder-val="{{ true }}"><div style="margin-top:4px;font-size:12.5px;color:#94A3B8;line-height:1.5">{{ sh.sub }}</div></sc-if>
+<sc-for list="{{ sh.groups }}" as="g" hint-placeholder-count="2">
+<div style="margin-top:16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.06em;color:#94A3B8;margin-bottom:8px">{{ g.label }}</div>
+<sc-if value="{{ g.isTiles }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3"><div style="flex:1 1 88px;min-height:88px;padding:10px;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:8px;border-radius:14px;background:{{ o.bg }};border:1.5px {{ o.bs }} {{ o.bd }}"><span style="width:36px;height:36px;border-radius:10px;background:{{ o.iconBg }};display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="{{ o.icon }}" stroke="{{ o.iconC }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:13.5px;font-weight:{{ o.fw }};color:{{ o.txt }};line-height:1.3">{{ o.label }}</span><sc-if value="{{ o.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#94A3B8;line-height:1.35">{{ o.sub }}</span></sc-if></div></sc-for></div></sc-if>
+<sc-if value="{{ g.isRadio }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3"><div style="min-height:52px;display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:14px;box-sizing:border-box;background:{{ o.bg }};border:1.5px solid {{ o.bd }}"><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;line-height:1.35;color:{{ o.txt }};font-weight:{{ o.fw }}">{{ o.label }}</span><span style="font-size:12px;color:#94A3B8;line-height:1.4">{{ o.sub }}</span></span><span style="width:20px;height:20px;border-radius:50%;box-sizing:border-box;border:2px solid {{ o.ring }};display:flex;align-items:center;justify-content:center;flex:none"><span style="width:10px;height:10px;border-radius:50%;background:#00F2FE;transform:scale({{ o.dot }})"></span></span></div></sc-for></div></sc-if>
+<sc-if value="{{ g.isChips }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 3px"><sc-for list="{{ g.options }}" as="o" hint-placeholder-count="4"><div style="position:relative;min-width:48px;min-height:48px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:14px;background:{{ o.bg }};border:1.5px {{ o.bs }} {{ o.bd }};font-size:13.5px;font-weight:{{ o.fw }};color:{{ o.txt }}">{{ o.label }}<span style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#00F2FE;display:flex;align-items:center;justify-content:center;transform:scale({{ o.dot }})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div></sc-for></div></sc-if>
+<sc-if value="{{ g.isFacts }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3"><div style="display:flex;align-items:flex-start;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#CDD3EA;margin-top:8px;flex:none"></span><span style="font-size:13.5px;color:#CDD3EA;line-height:1.55">{{ o.label }}</span></div></sc-for></div></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ sh.hasHint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;font-size:12px;color:#94A3B8;line-height:1.5">{{ sh.hint }}</div></sc-if>
+<sc-if value="{{ sh.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin-top:14px;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.4);border-radius:14px;padding:10px 12px;display:flex;align-items:flex-start;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" style="flex:none;margin-top:2px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><span style="font-size:12.5px;color:#F02277;line-height:1.5">{{ sh.err }}</span></div></sc-if>
+<sc-if value="{{ sh.hasPrimary }}" hint-placeholder-val="{{ false }}"><div style="margin-top:16px;min-height:52px;border-radius:14px;box-sizing:border-box;border:1.5px solid {{ sh.pBd }};background:{{ sh.pBg }};color:{{ sh.pC }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">{{ sh.primary }}</div></sc-if>
+<sc-if value="{{ sh.hasSecondary }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;min-height:48px;display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#00F2FE">{{ sh.secondary }}</div></sc-if>
+<sc-if value="{{ sh.hasDangerBtn }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;min-height:52px;border-radius:14px;box-sizing:border-box;border:1.5px solid rgba(240,34,119,0.5);background:rgba(240,34,119,0.08);color:#F02277;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">{{ sh.danger }}</div></sc-if>
+<sc-if value="{{ sh.hasDanger }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;min-height:48px;display:flex;align-items:center;font-size:13px;font-weight:600;color:#F02277">{{ sh.danger }}</div></sc-if>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">{{ sh.note }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="D Widget Zustände" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · HYBRID-WIDGET — ZUSTÄNDE</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Nachfolger von <code style="color:#CDD3EA">TodayWeekCard</code>. Oben der Heute-Block (nur wenn heute etwas steht), darunter der Wochenstreifen (nur wenn es eine Woche gibt), unten eine Fusszeile als einziger Weg in die Planung. Kein Startknopf, kein Häkchen, kein Zähler.</div>
+<div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin-top:18px">
+<sc-for list="{{ widgets }}" as="w" hint-placeholder-count="6">
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:{{ w.capC }}">{{ w.cap }}</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden;padding:14px 16px 18px;box-sizing:border-box">
+<div style="display:flex;align-items:center;gap:6px;min-height:48px">
+<span style="flex:1;font-size:20px;font-weight:700">Hybrid</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;color:#94A3B8">{{ w.date }}</span>
+<span style="width:48px;height:48px;margin-right:-8px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v14H4zM8 3v5M16 3v5M4 10h16" stroke="#00F2FE" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+</div>
+<sc-if value="{{ w.none }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;display:flex;flex-direction:column;gap:10px"><div style="min-height:72px;border:1px dashed #232334;border-radius:20px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:#94A3B8">BEREITSCHAFT · BOARD 11</div><div style="min-height:96px;border:1px dashed #232334;border-radius:20px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:#94A3B8">VERHÄLTNIS · BOARD 11</div></div></sc-if>
+<sc-if value="{{ w.loading }}" hint-placeholder-val="{{ false }}"><div role="status" aria-label="Heute wird geladen" style="margin-top:6px;background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px"><div style="height:10px;width:38%;border-radius:4px;background:#1A1A26;animation:{{ skelAnim }}"></div><div style="margin-top:12px;height:56px;border-radius:14px;background:#1A1A26;animation:{{ skelAnim }}"></div><div style="margin-top:12px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px"><sc-for list="{{ skel }}" as="s" hint-placeholder-count="7"><div style="height:52px;border-radius:12px;background:#1A1A26;animation:{{ skelAnim }}"></div></sc-for></div></div></sc-if>
+<sc-if value="{{ w.err }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin-top:6px;min-height:56px;background:#14141D;border:1px solid rgba(240,34,119,0.4);border-radius:20px;padding:6px 6px 6px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" style="flex:none"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><span style="flex:1 1 140px;font-size:13px;color:#CDD3EA;line-height:1.45">Deine Woche wurde nicht geladen.</span><span style="min-height:48px;display:flex;align-items:center;padding:0 8px;font-size:13px;font-weight:600;color:#00F2FE">Erneut versuchen</span></div></sc-if>
+<sc-if value="{{ w.ok }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:6px;background:#14141D;border:1px solid #232334;border-radius:20px;overflow:hidden">
+<div style="padding:14px 14px 0">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:#94A3B8">{{ w.kicker }}</span><sc-if value="{{ w.hasAB }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#CDD3EA;border:1px solid #232334;border-radius:30px;padding:2px 8px">{{ w.ab }}</span></sc-if></div>
+<sc-if value="{{ w.hasToday }}" hint-placeholder-val="{{ true }}"><div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ w.today }}" as="e" hint-placeholder-count="1"><div style="min-height:56px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:8px 12px 8px 10px;display:flex;align-items:center;gap:10px;box-sizing:border-box"><span style="width:36px;height:36px;border-radius:10px;background:{{ e.bg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="{{ e.icon }}" stroke="{{ e.ic }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:600;line-height:1.35">{{ e.title }}</span><span style="font-size:12px;color:#94A3B8;line-height:1.45">{{ e.meta }}</span><sc-if value="{{ e.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#CDD3EA;line-height:1.45">{{ e.note }}</span></sc-if><sc-if value="{{ e.hasSrc }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#94A3B8">{{ e.srcTxt }}</span></sc-if></div></div></sc-for>
+</div>
+<sc-if value="{{ w.hasSource }}" hint-placeholder-val="{{ true }}"><div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ w.source }}</div></sc-if>
+</sc-if>
+<sc-if value="{{ w.hasFact }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px;display:flex;align-items:flex-start;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:#CDD3EA;margin-top:6px;flex:none"></span><span style="font-size:12px;color:#94A3B8;line-height:1.5">{{ w.fact }}</span></div></sc-if>
+</div>
+<sc-if value="{{ w.hasWeek }}" hint-placeholder-val="{{ true }}"><div style="padding:12px 14px 0"><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+<sc-for list="{{ w.week }}" as="c" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0 8px;border-radius:12px;box-sizing:border-box;border:1.5px solid {{ c.bd }};background:{{ c.bg }}"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:{{ c.lc }};font-weight:{{ c.fw }}">{{ c.d }}</span><div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-height:20px"><sc-for list="{{ c.pips }}" as="x" hint-placeholder-count="1"><span style="width:20px;height:20px;border-radius:6px;background:{{ x.bg }};display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="{{ x.icon }}" stroke="{{ x.ic }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></sc-for></div></div></sc-for>
+</div></div></sc-if>
+<div style="margin-top:12px;min-height:52px;border-top:1px solid #232334;display:flex;align-items:center;padding:0 6px 0 14px"><span style="flex:1;font-size:13.5px;color:#CDD3EA">Deine Woche</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+</div>
+</sc-if>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">{{ w.note }}</div>
+</div>
+</sc-for>
+
+<div style="width:322px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">D13 · 200 % SYSTEMSCHRIFT AUF 320 DP</div>
+<div style="margin-top:8px;width:320px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden;padding:14px 16px 18px;box-sizing:border-box">
+<div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px"><span style="flex:1;font-size:36px;font-weight:700">Hybrid</span><span style="width:56px;height:56px;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v14H4zM8 3v5M16 3v5M4 10h16" stroke="#00F2FE" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+<div style="margin-top:8px;background:#14141D;border:1px solid #232334;border-radius:20px;overflow:hidden">
+<div style="padding:14px 14px 0"><div style="font-family:'JetBrains Mono',monospace;font-size:22px;letter-spacing:0.08em;color:#94A3B8;line-height:1.35">HEUTE · MITTWOCH</div>
+<div style="margin-top:10px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:10px 12px 12px"><span style="width:48px;height:48px;border-radius:12px;background:rgba(255,176,32,0.14);display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11" stroke="#FFB020" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><div style="margin-top:8px;font-size:28px;font-weight:600;line-height:1.25">Unterkörper B</div><div style="margin-top:4px;font-size:24px;color:#94A3B8;line-height:1.35">Kraft · 6 Übungen</div></div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:20px;letter-spacing:0.06em;color:#94A3B8;line-height:1.4">LAUT DEINER WOCHE</div></div>
+<div style="padding:14px 14px 0;display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ bigStrip }}" as="c" hint-placeholder-count="7"><div style="flex:1 1 84px;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;box-sizing:border-box;border:1.5px solid {{ c.bd }};background:{{ c.bg }};min-height:48px"><span style="font-family:'JetBrains Mono',monospace;font-size:24px;color:{{ c.lc }};font-weight:{{ c.fw }}">{{ c.d }}</span><div style="display:flex;gap:4px"><sc-for list="{{ c.pips }}" as="x" hint-placeholder-count="1"><span style="width:28px;height:28px;border-radius:8px;background:{{ x.bg }};display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="{{ x.icon }}" stroke="{{ x.ic }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></sc-for></div></div></sc-for></div>
+<div style="margin-top:14px;min-height:64px;border-top:1px solid #232334;display:flex;align-items:center;padding:0 6px 0 14px"><span style="flex:1;font-size:26px;color:#CDD3EA">Deine Woche</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Sieben Spalten gehen bei 24 sp nicht (256 dp Innenbreite / 7 = 36 dp je Zelle, „Mo" allein braucht 34). Ab <code style="color:#CDD3EA">textScaler &gt; 1,45</code> wird der Streifen ein <code style="color:#CDD3EA">Wrap</code> aus Zellen mit Pips <strong style="color:#CDD3EA">neben</strong> dem Kürzel: drei, drei, eine. Kürzel bleiben zweistellig. Die Reihenfolge ist immer Mo → So, nie ab heute.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="E Zweimal Heute" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · „HEUTE" ZWEIMAL — EINE ABLEITUNG, ZWEI FILTER</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Links der Kopf des Startblocks im Kraft-Tab (Board 17), rechts das Hybrid-Widget — am selben Tag, aus <code style="color:#CDD3EA">todayPlan()</code>. Der Kraft-Tab zeigt nur Kraft; beide nennen dieselbe Quelle. <strong style="color:#CDD3EA">Widerspruch ist ausgeschlossen, weil keiner etwas sagt, das der andere nicht auch liest.</strong></div>
+<div style="margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(560px,1fr));gap:16px">
+<sc-for list="{{ twice }}" as="t" hint-placeholder-count="4">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">{{ t.cap }}</div>
+<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start">
+<div style="flex:1 1 240px;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8;margin-bottom:6px">KRAFT · TRAINIEREN</div>
+<div style="border-radius:20px;padding:1.5px;background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE)"><div style="border-radius:18.5px;background:#14141D;padding:14px">
+<div style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:{{ t.k.dot }};box-shadow:{{ t.k.glow }};flex:none"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:{{ t.k.kc }}">{{ t.k.kicker }}</span></div>
+<div style="margin-top:8px;font-size:16px;font-weight:600;line-height:1.3">{{ t.k.title }}</div><div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.45">{{ t.k.meta }}</div>
+<div style="margin-top:12px;height:48px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;letter-spacing:0.08em">{{ t.k.cta }}</div>
+</div></div>
+</div>
+<div style="flex:1 1 240px;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8;margin-bottom:6px">HYBRID · WIDGET</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:#94A3B8">{{ t.w.kicker }}</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px"><sc-for list="{{ t.w.today }}" as="e" hint-placeholder-count="1"><div style="min-height:52px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:7px 10px;display:flex;align-items:center;gap:10px;box-sizing:border-box"><span style="width:32px;height:32px;border-radius:9px;background:{{ e.bg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="{{ e.icon }}" stroke="{{ e.ic }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:13.5px;font-weight:600;line-height:1.35">{{ e.title }}</span><span style="font-size:12px;color:#94A3B8;line-height:1.4">{{ e.meta }}</span><sc-if value="{{ e.hasSrc }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#94A3B8">{{ e.srcTxt }}</span></sc-if></div></div></sc-for></div>
+<sc-if value="{{ t.w.hasSource }}" hint-placeholder-val="{{ true }}"><div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">{{ t.w.source }}</div></sc-if>
+</div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:12px;color:#94A3B8;line-height:1.6">{{ t.note }}</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:14px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">DIE ABLEITUNG · EIN ORT IM CODE (lib/planning/today_plan.dart)</div>
+<pre style="margin:10px 0 0;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.75;color:#CDD3EA;white-space:pre-wrap">todayPlan(date) →
+  wk     = goal.weekPattern == 'alternating'
+             ? (weeksBetween(goal.anchorWeekStart, date).isEven ? week.a : week.b)
+             : week.a
+  rhythm = wk.entries.where(weekday == date.isoWeekday)
+             .sortBy(daypart: morning → midday → evening → ohne, dann order)
+  appt   = schedule.where(day == date)                      // Bestand, nur Kraft
+  items  = appt.isEmpty
+             ? rhythm
+             : rhythm.where(kind == 'cardio') + appt        // Termin schlägt Rhythmus je Spur; „Frei" fällt weg
+  jedes Element: { kind, title, meta, source: 'week' | 'appointment', planResolved }
+
+Hybrid-Widget   = items                                     // alles
+Kraft-Startblock = items.where(kind == 'strength').first    // nur Kraft; fehlt → „Zuletzt" (Board 17)</pre>
+</div>
+</div>
+
+<div data-screen-label="F Spezifikation" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · SPEZIFIKATION — MASSE, ABSTÄNDE, FLÄCHEN, TYPO, TAP-ZIELE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px;overflow-x:auto">
+<div style="min-width:900px">
+<div style="display:grid;grid-template-columns:180px 150px 1fr 1fr 170px;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8"><span>ELEMENT</span><span>HÖHE / MASS</span><span>FLÄCHE</span><span>TYPO</span><span>TAP-ZIEL</span></div>
+<sc-for list="{{ spec }}" as="s" hint-placeholder-count="18">
+<div style="display:grid;grid-template-columns:180px 150px 1fr 1fr 170px;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.5"><span style="font-weight:600;color:#FFFFFF">{{ s.el }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px">{{ s.h }}</span><span style="color:#94A3B8">{{ s.surface }}</span><span style="color:#94A3B8">{{ s.type }}</span><span style="color:#CDD3EA">{{ s.tap }}</span></div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div data-screen-label="G0 Motion live" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · MOTION LIVE — DIE VIER BEWEGUNGEN, DIE DIESEM BOARD EIGEN SIND</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Grundlage ist 18b: Glow ist Quittung, die Lichtkante markiert einen Moment, nichts leuchtet an Offenem. Neu sind nur Ortswechsel — ein Eintrag wandert, ein Eintrag entsteht, ein Tag geht zu Ende. <strong style="color:#CDD3EA">Bewegung zeigt, wo etwas hingegangen ist; sie feiert es nicht.</strong> Schleife hier nur zur Ansicht.</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px">
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="position:relative;height:190px;border-radius:14px;background:#050507;border:1px solid #16161F;overflow:hidden;padding:5px 12px;box-sizing:border-box">
+<sc-for list="{{ demoDays }}" as="d" hint-placeholder-count="3"><div style="height:60px;border-top:1px solid {{ d.line }};display:flex;align-items:center;font-size:12.5px;font-weight:600;color:#CDD3EA">{{ d.n }}</div></sc-for>
+<div style="position:absolute;left:92px;right:12px;top:11px;height:48px;border-radius:12px;background:#1A1A26;border:1px solid #232334;display:flex;align-items:center;gap:8px;padding:0 10px;box-sizing:border-box;overflow:hidden;animation:{{ demoFlip }}"><span style="width:28px;height:28px;border-radius:8px;background:#7A2BDB;display:flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2.5-6 4 12 2.5-6H21" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12.5px;font-weight:600">Lauf</span><span aria-hidden="true" style="position:absolute;left:10px;right:10px;top:-1px;height:2px;overflow:hidden"><span style="position:absolute;top:0;left:0;width:34%;height:2px;background:linear-gradient(90deg,rgba(0,242,254,0),#00F2FE,rgba(0,242,254,0));box-shadow:0 0 10px #00F2FE;opacity:0;animation:{{ demoFlipScan }}"></span></span></div>
+</div>
+<div style="font-size:13px;font-weight:600">1 · Eintrag wandert — ohne Ziehen</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Nach dem Tipp auf „Do" im Blatt: Blatt schliesst, dann fliegt die Zeile vom alten zum neuen Platz (FLIP), Ursprung schliesst, Ziel öffnet; am Ziel läuft der Speicher-Scan. Liegt das Ziel ausserhalb der Sicht: kein Flug, kein Auto-Scroll — die Snackbar sagt, wohin.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">240 + 280–480 (nach Strecke) + 760 · settle · reduziert: springt</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="position:relative;height:190px;border-radius:14px;background:#050507;border:1px solid #16161F;overflow:hidden;padding:5px 12px;box-sizing:border-box">
+<sc-for list="{{ demoDays }}" as="d" hint-placeholder-count="3"><div style="height:60px;border-top:1px solid {{ d.line }};display:flex;align-items:center;font-size:12.5px;font-weight:600;color:#CDD3EA">{{ d.n }}</div></sc-for>
+<div style="position:absolute;left:92px;right:12px;top:179px;height:0;border-top:2px dashed #00F2FE;opacity:0;animation:{{ demoDrop }}"></div>
+<div style="position:absolute;left:92px;right:12px;top:11px;height:48px;border-radius:12px;background:#1A1A26;border:1px solid #232334;display:flex;align-items:center;gap:8px;padding:0 10px;box-sizing:border-box;animation:{{ demoDrag }}"><span style="width:28px;height:28px;border-radius:8px;background:#7A2BDB;display:flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2.5-6 4 12 2.5-6H21" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12.5px;font-weight:600">Lauf</span></div>
+</div>
+<div style="font-size:13px;font-weight:600">2 · Eintrag wandert — mit Ziehen</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Lange drücken (400 ms) hebt die Zeile an: scale 1,03, Schatten, leichte Haptik. Über einem Tag erscheint am Tagesende eine gestrichelte Cyan-Linie. Loslassen setzt ab; ausserhalb losgelassen fliegt die Zeile zurück. Die Liste scrollt am Rand mit, nie von selbst.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">160 heben · folgt · 240 absetzen + 760 Scan · press / settle · reduziert: ohne scale</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="height:190px;border-radius:14px;background:#050507;border:1px solid #16161F;overflow:hidden;padding:5px 12px;box-sizing:border-box">
+<div style="height:48px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:600;color:#CDD3EA">Donnerstag<span style="width:28px;height:28px;border-radius:8px;border:1.5px solid rgba(0,242,254,0.45);display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#00F2FE" stroke-width="2.4" stroke-linecap="round"></path></svg></span></div>
+<div style="overflow:hidden;animation:{{ demoCreate }}"><div style="position:relative;height:48px;border-radius:12px;background:#1A1A26;border:1px solid #232334;display:flex;align-items:center;gap:8px;padding:0 10px;box-sizing:border-box"><span style="width:28px;height:28px;border-radius:8px;background:rgba(255,176,32,0.14);display:flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11" stroke="#FFB020" stroke-width="2" stroke-linecap="round"></path></svg></span><span style="font-size:12.5px;font-weight:600">Oberkörper A</span><span aria-hidden="true" style="position:absolute;left:10px;right:10px;top:-1px;height:2px;overflow:hidden"><span style="position:absolute;top:0;left:0;width:34%;height:2px;background:linear-gradient(90deg,rgba(0,242,254,0),#00F2FE,rgba(0,242,254,0));box-shadow:0 0 10px #00F2FE;opacity:0;animation:{{ demoCreateScan }}"></span></span></div></div>
+<div style="margin-top:10px;height:1px;background:#232334"></div>
+<div style="height:48px;display:flex;align-items:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Freitag</div>
+</div>
+<div style="font-size:13px;font-weight:600">3 · Eintrag entsteht</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">„Hinzufügen" schliesst das Blatt (240, exit); danach öffnet die Zeile im Tag — Höhe 0 → 56 und Deckkraft, 6 dp von oben —, der Tag darunter rückt nach. Dann der Scan als Quittung. Keine Lichtkante: der Eintrag ist Ergebnis, nicht neuer Ort.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">320 enter + 760 settle (240 versetzt) · reduziert: steht sofort, kein Scan</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="height:190px;border-radius:14px;background:#050507;border:1px solid #16161F;overflow:hidden;padding:12px;box-sizing:border-box">
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:10px">
+<div style="position:relative;height:62px">
+<div style="position:absolute;inset:0;animation:{{ demoMidOld }}"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">HEUTE · MITTWOCH</div><div style="margin-top:6px;display:flex;align-items:center;gap:8px"><span style="width:28px;height:28px;border-radius:8px;background:rgba(255,176,32,0.14);display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11" stroke="#FFB020" stroke-width="2" stroke-linecap="round"></path></svg></span><span style="font-size:12.5px;font-weight:600">Unterkörper B</span></div></div>
+<div style="position:absolute;inset:0;opacity:0;animation:{{ demoMidNew }}"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">HEUTE · DONNERSTAG</div><div style="margin-top:6px;display:flex;align-items:center;gap:8px"><span style="width:28px;height:28px;border-radius:8px;background:#7A2BDB;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2.5-6 4 12 2.5-6H21" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12.5px;font-weight:600">Lauf · 40 Min</span></div></div>
+</div>
+<div style="position:relative;margin-top:10px;display:flex;gap:4px">
+<sc-for list="{{ demoStrip }}" as="c" hint-placeholder-count="7"><div style="width:30px;height:40px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">{{ c.d }}</span><span style="width:12px;height:12px;border-radius:4px;background:{{ c.bg }}"></span></div></sc-for>
+<span aria-hidden="true" style="position:absolute;left:68px;top:0;width:30px;height:40px;border-radius:8px;border:1.5px solid #CDD3EA;box-sizing:border-box;animation:{{ demoMidRing }}"></span>
+</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:600">4 · Das Widget wechselt um Mitternacht</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Nur wenn der Hybrid-Tab um 00:00 sichtbar ist: der alte Heute-Block blendet nach oben aus, der neue kommt von unten, der Heute-Rand gleitet eine Zelle weiter. Kein Glow — der Wechsel ist keine Quittung. Nach Resume baut der Tab direkt mit dem neuen Tag, ohne Bewegung.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">160 exit + 240 enter (80 versetzt) · Rand 240 settle · reduziert: Austausch ohne Bewegung</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="G Motion" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · MOTION — AUSLÖSER, EIGENSCHAFT, DAUER, KURVE, RUHELAGE, REDUZIERT</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Kurven und Dauern aus 18b (<code style="color:#CDD3EA">AtemMotion.*</code>). Neu vorgeschlagen: <code style="color:#CDD3EA">flip</code> (Flugdauer = clamp(280, 180 + 0,6 × Strecke dp, 480)) und <code style="color:#CDD3EA">lift</code> (160). Flutter: FLIP über <code style="color:#CDD3EA">GlobalKey</code> je Eintrag und ein <code style="color:#CDD3EA">Overlay</code>-Ghost; Ziehen mit <code style="color:#CDD3EA">LongPressDraggable</code> + <code style="color:#CDD3EA">DragTarget</code> je Tag.</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px;overflow-x:auto">
+<div style="min-width:1000px">
+<div style="display:grid;grid-template-columns:160px 160px 1fr 110px 110px 130px 150px;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8"><span>ELEMENT</span><span>AUSLÖSER</span><span>EIGENSCHAFT</span><span>DAUER</span><span>KURVE</span><span>RUHELAGE</span><span>REDUZIERT</span></div>
+<sc-for list="{{ motion }}" as="m" hint-placeholder-count="14">
+<div style="display:grid;grid-template-columns:160px 160px 1fr 110px 110px 130px 150px;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.5"><span style="font-weight:600;color:#FFFFFF">{{ m.el }}</span><span style="color:#94A3B8">{{ m.trig }}</span><span style="color:#94A3B8">{{ m.prop }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px">{{ m.dur }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">{{ m.curve }}</span><span style="color:#94A3B8">{{ m.rest }}</span><span style="color:#00FF87">{{ m.red }}</span></div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div data-screen-label="H Stringtabelle" style="margin-top:64px;max-width:1100px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · STRINGTABELLE — DEUTSCH PRIMÄR, ZÄHLFORMEN MIT EINZAHL</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:250px minmax(0,1fr) minmax(0,1fr);gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8"><span>KEY</span><span>DEUTSCH</span><span>ENGLISCH</span></div>
+<sc-for list="{{ strings }}" as="s" hint-placeholder-count="30">
+<div style="display:grid;grid-template-columns:250px minmax(0,1fr) minmax(0,1fr);gap:12px;padding:9px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline;line-height:1.5"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE;word-break:break-all">{{ s.key }}</span><span style="color:#CDD3EA">{{ s.de }}</span><span style="color:#94A3B8">{{ s.en }}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I A11y" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · A11Y-NOTIZEN — BESONDERS: VERSCHIEBEN OHNE ZIEHEN</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px;overflow-x:auto">
+<div style="min-width:900px">
+<div style="display:grid;grid-template-columns:170px 1fr 170px 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8"><span>ELEMENT</span><span>SEMANTICS-LABEL</span><span>ROLLE</span><span>ZUSTAND / LIVE-REGION</span></div>
+<sc-for list="{{ a11y }}" as="a" hint-placeholder-count="16">
+<div style="display:grid;grid-template-columns:170px 1fr 170px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.55"><span style="font-weight:600;color:#FFFFFF">{{ a.el }}</span><span style="color:#94A3B8">{{ a.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span><span style="color:#94A3B8">{{ a.state }}</span></div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div data-screen-label="J Wiederverwendung" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">J · WIEDERVERWENDUNG UND WAS WIRKLICH NEU IST</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:90px 250px minmax(0,1fr);gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8"><span>HERKUNFT</span><span>BAUSTEIN</span><span>VERWENDUNG HIER</span></div>
+<sc-for list="{{ reuse }}" as="r" hint-placeholder-count="16">
+<div style="display:grid;grid-template-columns:90px 250px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:{{ r.c }}">{{ r.m }}</span><span style="color:#FFFFFF;font-weight:600">{{ r.b }}</span><span style="color:#94A3B8;line-height:1.6">{{ r.use }}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="K Entscheidungsprotokoll" style="margin-top:64px;max-width:980px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">K · ENTSCHEIDUNGSPROTOKOLL — ZUERST DIE SECHS FRAGEN DES AUFTRAGS</div>
+<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="12">
+<div style="background:#0B0B0E;border:1px solid {{ d.cardBd }};border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start">
+<div style="width:44px;height:36px;border-radius:12px;background:{{ d.bg }};border:1px solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:{{ d.c }}">{{ d.n }}</div>
+<div>
+<div style="font-size:13.5px;font-weight:600;line-height:1.45">{{ d.title }}</div>
+<div style="margin-top:5px;font-size:12.5px;color:#94A3B8;line-height:1.7;text-wrap:pretty">{{ d.body }}</div>
+<sc-if value="{{ d.hasNo }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px;font-size:12px;color:#94A3B8;line-height:1.65"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:#F02277">VERWORFEN · </span>{{ d.no }}</div></sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="L planning/week" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">L · VORSCHLAG FÜR DIE FELDER VON planning/week</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">userProfiles/{uid}/planning/week · ABZUGLEICHEN MIT 04-firestore-schema.md</div>
+<pre style="margin:10px 0 0;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.75;color:#CDD3EA;white-space:pre-wrap">week {
+  a            { entries: { &lt;id&gt;: Entry } }       immer vorhanden
+  b?           { entries: { &lt;id&gt;: Entry } }       nur wenn goal.weekPattern
+                                                   = 'alternating' je galt
+  updatedAt    timestamp                         für „Zuletzt geändert"
+}
+
+Entry {
+  weekday      1–7                               ISO, Montag = 1
+  kind         'strength' | 'cardio' | 'off'
+  planId?      string                            nur strength · fehlt = ohne Plan
+  planName?    string                            Schnappschuss, wenn planId
+  activity     'run' | 'ride' | 'swim' |         nur cardio · Pflicht
+               'row' | 'hike' | 'other'
+  durationMin? 10–240                            nur cardio
+  daypart?     'morning' | 'midday' | 'evening'  nicht bei off
+  order        number                            innerhalb Tag + Tageszeit
+  createdAt    timestamp
+  origin?      reserviert für Board 20           heute nie geschrieben
+}</pre>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px;font-size:12.5px;color:#94A3B8;line-height:1.7">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8;margin-bottom:8px">SECHS SCHREIBREGELN</div>
+<div><strong style="color:#CDD3EA">1 · Map statt Array.</strong> Jede Handlung ist ein Feld-Update: Verschieben schreibt <code style="color:#CDD3EA">a.entries.&lt;id&gt;.weekday</code>, sonst nichts. Optimistisch; eine Ablehnung setzt genau dieses Feld zurück.</div>
+<div style="margin-top:8px"><strong style="color:#CDD3EA">2 · Kein Datum, kein Heute.</strong> Das Dokument kennt nur Wochentage. „Heute" ist <code style="color:#CDD3EA">todayPlan()</code> und wird nie gespeichert — es gibt keine vorab angelegten Termine.</div>
+<div style="margin-top:8px"><strong style="color:#CDD3EA">3 · off ist exklusiv.</strong> Ein Tag hat entweder genau ein <code style="color:#CDD3EA">off</code> oder beliebig viele Trainings. Training auf einen freien Tag löscht das <code style="color:#CDD3EA">off</code> im selben Batch (Snackbar nennt es).</div>
+<div style="margin-top:8px"><strong style="color:#CDD3EA">4 · Plan löschen schreibt nichts hierher.</strong> Aufgelöst wird beim Lesen: unbekannte <code style="color:#CDD3EA">planId</code> → freies Krafttraining + <code style="color:#CDD3EA">planName</code>. Ändern setzt <code style="color:#CDD3EA">planId</code> neu und löscht den Schnappschuss.</div>
+<div style="margin-top:8px"><strong style="color:#CDD3EA">5 · Woche leeren = entries: {} der sichtbaren Woche</strong>, ein Vorgang, ohne Rückgängig. <code style="color:#CDD3EA">b</code> bleibt bestehen, wenn das Briefing zurück auf „jede Woche gleich" geht — dann gilt es nur nicht.</div>
+<div style="margin-top:8px"><strong style="color:#CDD3EA">6 · Keine Kopie des Briefings.</strong> Kein Feld hier wiederholt <code style="color:#CDD3EA">perWeek</code>, <code style="color:#CDD3EA">days</code> oder <code style="color:#CDD3EA">dayparts</code> aus <code style="color:#CDD3EA">planning/goal</code>. Der Anker für A/B wird gelesen, nie gespiegelt.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="M Vorausgesetzt" style="margin-top:64px;max-width:980px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">M · WAS BOARD 20 UND DIE NACHBARN HIERVON VORAUSSETZEN — FESTGEHALTEN, NICHT ENTWORFEN</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px 14px">
+<sc-for list="{{ prereq }}" as="p" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:12.5px;line-height:1.65;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#AB6BF0">{{ p.b }}</span><span style="color:#CDD3EA">{{ p.t }}</span></div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Person 1&quot;,&quot;options&quot;:[&quot;Leer&quot;,&quot;Halb gefüllt&quot;,&quot;Person 1&quot;,&quot;Person 4&quot;,&quot;Wechselwochen&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Artboard A1&quot;},&quot;saveFailure&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Artboard A1&quot;},&quot;reducedMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Artboard A1&quot;}}">
+class Component extends DCLogic {
+  D = (() => {
+    const IC = {
+      kraft: 'M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11',
+      cardio: 'M3 12h4l2.5-6 4 12 2.5-6H21',
+      frei: 'M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M10 9v6M14 9v6'
+    };
+    const TILE = { strength: { bg: 'rgba(255,176,32,0.14)', ic: '#FFB020', icon: IC.kraft }, cardio: { bg: '#7A2BDB', ic: '#FFFFFF', icon: IC.cardio }, off: { bg: '#0B0B0E', ic: '#CDD3EA', icon: IC.frei } };
+    const PLANS = { p1: { name: 'Oberkörper A', n: 5 }, p2: { name: 'Unterkörper B', n: 6 }, p3: { name: 'Ganzkörper', n: 7 } };
+    const ACT = { run: 'Lauf', ride: 'Rad', swim: 'Schwimmen', row: 'Rudern', hike: 'Wandern', other: 'Sonstiges' };
+    const DP = { morning: 'morgens', midday: 'mittags', evening: 'abends' };
+    const DPL = { morning: 'Morgens', midday: 'Mittags', evening: 'Abends' };
+    const DPO = { morning: 0, midday: 1, evening: 2 };
+    const DAYS = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+    const SH = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    const S = (wd, planId, dp, x) => Object.assign({ kind: 'strength', wd, planId: planId || null, dp: dp || null }, x || {});
+    const C = (wd, act, dur, dp) => ({ kind: 'cardio', wd, act, dur: dur || null, dp: dp || null });
+    const O = (wd) => ({ kind: 'off', wd });
+    const ids = (l, p) => l.map((e, i) => Object.assign({}, e, { id: p + i, ord: i }));
+    const W = {
+      halb: ids([S(1, 'p1'), C(3, 'run', 45), S(5)], 'h'),
+      p1: ids([S(1, 'p1'), C(2, 'run', 45), S(3, 'p2'), C(4, 'run', 40), S(5, 'p3'), C(6, 'run', 60), O(7)], 'q'),
+      p2: ids([S(1, 'p1'), S(2, 'p2'), S(4, 'p1'), S(6, 'p2')], 'r'),
+      p4: ids([C(1, 'run', 30, 'morning'), S(1, 'p1', 'evening'), C(2, 'run', 30, 'morning'), C(3, 'run', 30, 'morning'), S(3, 'p2', 'evening'), C(4, 'ride', 45, 'morning'), C(5, 'run', 30, 'morning'), S(5, 'p3', 'evening'), C(6, 'run', 60, 'morning'), S(6, 'p1', 'evening'), O(7)], 's'),
+      altA: ids([S(1, 'p1'), C(2, 'run', 40), S(3, 'p2'), S(5, 'p3'), C(6, 'run', 60)], 'a'),
+      altB: ids([S(2, 'p1'), S(4, 'p2'), C(6, 'run', 45), C(7, 'swim', 40)], 'b'),
+      pause: ids([S(1, 'p3'), C(4, 'run', 30)], 'z'),
+      del: ids([S(1, 'x9', null, { planName: 'Push A' }), C(3, 'run', 45), S(5)], 'd')
+    };
+    const BR = {
+      p1: { v: 'Kraft 3× · Mo Mi Fr · Cardio 3× · Di Do Sa', meta: 'DEINE ANGABE VOM 14. SEPT' },
+      halb: { v: 'Kraft 2× · Cardio 1× · wie es passt', meta: 'DEINE ANGABE VOM 2. SEPT' },
+      p2: { v: 'Nur Kraft · 4× · wie es passt', meta: 'DEINE ANGABE VOM 9. SEPT' },
+      p3: { v: 'Nur Cardio · 5× · jede Woche anders', meta: 'DEINE ANGABE VOM 11. SEPT' },
+      p4: { v: 'Kraft 4× abends · Cardio 6× morgens · meist zweimal am Tag', meta: 'DEINE ANGABE VOM 3. SEPT' },
+      alt: { v: 'Zwei Wochen im Wechsel · A: Kraft 3×, Cardio 2× · B: Kraft 2×, Cardio 2×', meta: 'DEINE ANGABE VOM 5. SEPT' },
+      pause: { v: 'Kraft 2× · Cardio 2× · so will ich wieder trainieren', meta: 'VORGENOMMEN AM 2. SEPT' }
+    };
+    const FACTS = { p1: { 1: { t: 'Trainiert · Oberkörper A, 52 Min', k: 'strength' }, 3: { t: 'Trainiert · Lauf, 35 Min · 07:05', k: 'cardio' } } };
+    return { IC, TILE, PLANS, ACT, DP, DPL, DPO, DAYS, SH, W, BR, FACTS };
+  })();
+  noop = () => {};
+  state = this.init(this.props.startState ?? 'Person 1');
+
+  seed(s) {
+    const { W, BR, FACTS } = this.D;
+    if (s === 'Leer') return { a: [], b: [], alt: false, brief: null, facts: {} };
+    if (s === 'Halb gefüllt') return { a: W.halb, b: [], alt: false, brief: BR.halb, facts: {} };
+    if (s === 'Person 4') return { a: W.p4, b: [], alt: false, brief: BR.p4, facts: {} };
+    if (s === 'Wechselwochen') return { a: W.altA, b: W.altB, alt: true, brief: BR.alt, facts: {} };
+    return { a: W.p1, b: [], alt: false, brief: BR.p1, facts: FACTS.p1 };
+  }
+  init(s) {
+    const sd = this.seed(s);
+    return { a: sd.a, b: sd.b, alt: sd.alt, brief: sd.brief, facts: sd.facts, view: 'a', today: 3, wOff: 0, sheet: null, draft: null, sheetErr: null, dayErr: null, snack: null, flash: null, n: 0, midN: 0, uid: 1000, failed: false };
+  }
+  componentDidUpdate(pp) {
+    if ((pp.startState ?? 'Person 1') !== (this.props.startState ?? 'Person 1')) this.setState(this.init(this.props.startState ?? 'Person 1'));
+    if (!!pp.saveFailure !== !!this.props.saveFailure) this.setState({ failed: false });
+  }
+  componentWillUnmount() { clearTimeout(this.snT); clearTimeout(this.failT); }
+
+  key() { return this.state.alt ? this.state.view : 'a'; }
+  sorted(l) { const o = this.D.DPO; return l.slice().sort((x, y) => ((x.dp ? o[x.dp] : 3) - (y.dp ? o[y.dp] : 3)) || ((x.ord || 0) - (y.ord || 0))); }
+  ev(e) {
+    const { TILE, PLANS, ACT, DP } = this.D;
+    const t = TILE[e.kind]; const dp = e.dp ? DP[e.dp] : null;
+    let title, meta, note = '';
+    if (e.kind === 'strength') {
+      const p = e.planId && PLANS[e.planId];
+      title = p ? p.name : 'Krafttraining';
+      meta = ['Kraft', p ? p.n + ' Übungen' : 'ohne Plan', dp].filter(Boolean).join(' · ');
+      if (e.planId && !p) note = 'Plan „' + e.planName + '" gelöscht — bleibt freies Krafttraining';
+    } else if (e.kind === 'cardio') {
+      title = ACT[e.act]; meta = ['Cardio', e.dur ? e.dur + ' Min' : null, dp].filter(Boolean).join(' · ');
+    } else { title = 'Frei'; meta = 'kein Training vorgesehen'; }
+    return { id: e.id, kind: e.kind, title, meta, hasNote: !!note, note, bg: t.bg, ic: t.ic, icon: t.icon, hasSrc: false, srcTxt: '', anim: 'none', scan: 'none', a11y: title + ', ' + meta.split(' · ').join(', ') };
+  }
+  apptView(a) { const t = this.D.TILE.strength; return { kind: 'strength', title: a.name, meta: 'Kraft · ' + a.n + ' Übungen', hasNote: false, note: '', bg: t.bg, ic: t.ic, icon: t.icon, hasPlan: true }; }
+
+  days(list, o) {
+    o = o || {};
+    const { DAYS } = this.D;
+    return DAYS.map((name, i) => {
+      const wd = i + 1;
+      const es = this.sorted(list.filter(e => e.wd === wd)).map(e => {
+        const v = this.ev(e); const fl = o.flash && o.flash.id === e.id;
+        return Object.assign(v, { onClick: o.onEntry ? () => o.onEntry(e.id) : this.noop, anim: fl ? o.flash.anim : 'none', scan: fl ? o.flash.scan : 'none', a11y: v.a11y + '. ' + name + '. Doppeltippen zum Verschieben, Ändern oder Entfernen.' });
+      });
+      const isToday = o.today === wd; const f = o.facts && o.facts[wd]; const er = o.err && o.err.wd === wd;
+      return { name, wd, line: i ? '#232334' : 'transparent', isToday, hasEntries: es.length > 0, entries: es,
+        hasFact: !!f, fact: f ? f.t : '', hasErr: !!er, errText: er ? o.err.text : '', onRetry: o.retry || this.noop,
+        onAdd: o.onAdd ? () => o.onAdd(wd) : this.noop, addLabel: 'Eintrag am ' + name + ' hinzufügen',
+        a11y: name + (isToday ? ', heute' : '') + ', ' + (es.length ? es.length + (es.length === 1 ? ' Eintrag' : ' Einträge') : 'kein Eintrag') };
+    });
+  }
+  sumView(list, facts) {
+    const { TILE } = this.D; const fk = Object.values(facts || {});
+    if (!fk.length) return [];
+    const out = [];
+    [['strength', 'Kraft'], ['cardio', 'Cardio']].forEach(([k, n]) => {
+      const done = fk.filter(f => f.k === k).length; const plan = list.filter(e => e.kind === k).length;
+      if (!done && !plan) return;
+      out.push({ a: done + ' ' + n + '-' + (done === 1 ? 'Einheit' : 'Einheiten'), b: plan ? '· in deiner Woche ' + plan : '', bg: TILE[k].bg, ic: TILE[k].ic, icon: TILE[k].icon });
+    });
+    return out;
+  }
+  briefView(b) { return { brief: b ? b.v : 'Nicht angegeben — freiwillig', briefC: b ? '#FFFFFF' : '#CDD3EA', hasBriefMeta: !!b, briefMeta: b ? b.meta : '' }; }
+  abOpts(v, fn) { return ['a', 'b'].map(k => ({ label: 'Woche ' + k.toUpperCase(), bg: v === k ? 'rgba(0,242,254,0.08)' : 'transparent', bd: v === k ? '#00F2FE' : 'transparent', c: v === k ? '#FFFFFF' : '#CDD3EA', aria: v === k ? 'true' : 'false', onClick: fn ? () => fn(k) : this.noop })); }
+  page(o) {
+    const list = o.list || []; const view = o.view || 'a';
+    const sum = o.facts ? this.sumView(list, o.facts) : [];
+    return Object.assign({
+      cap: o.cap, capC: o.capC || '#94A3B8', note: o.note || '', aurora: 'none',
+      sub: o.alt ? 'Zwei Wochen im Wechsel, wie in deinen Trainingsangaben.' : 'Was an welchem Wochentag üblich ist. Gilt jede Woche, bis du es änderst.',
+      hasMeta: list.length > 0 && !o.loading && !o.loadErr, meta: 'ZULETZT GEÄNDERT · ' + (o.edited || '14. SEPT'),
+      hasAB: !!o.alt, abOpts: this.abOpts(view), abMeta: 'DIESE WOCHE (KW 39) IST WOCHE A',
+      loading: !!o.loading, loadErr: !!o.loadErr, ok: !o.loading && !o.loadErr,
+      weekHead: o.alt ? 'WOCHE ' + view.toUpperCase() + ' · GILT JEDE ZWEITE WOCHE' : 'GILT JEDE WOCHE',
+      days: this.days(list, { today: o.today, facts: o.facts, err: o.err }),
+      hasSum: sum.length > 0, sumHead: 'DIESE WOCHE BISHER · KW 39', sum,
+      used: 'GENUTZT VON · HYBRID (HEUTE) · KRAFT (TRAINIEREN)', hasAny: list.length > 0 && !o.loading && !o.loadErr, onClear: this.noop
+    }, this.briefView(o.brief));
+  }
+  widget(o) {
+    const { DAYS, SH, TILE } = this.D;
+    const list = o.list || []; const t = o.today;
+    let es = this.sorted(list.filter(e => e.wd === t)).map(e => Object.assign(this.ev(e), { src: 'week' }));
+    if (o.appt) es = es.filter(e => e.kind === 'cardio').concat([Object.assign(this.apptView(o.appt), { src: 'appt' })]);
+    const mixed = es.some(e => e.src === 'appt') && es.some(e => e.src === 'week');
+    const srcTxt = s => s === 'appt' ? 'TERMIN' : 'LAUT DEINER WOCHE';
+    es = es.map(e => Object.assign(e, { hasSrc: mixed, srcTxt: srcTxt(e.src) }));
+    const week = SH.map((d, i) => {
+      const wd = i + 1; const pe = this.sorted(list.filter(e => e.wd === wd)); const isT = wd === t;
+      return { d, bd: isT ? '#CDD3EA' : 'transparent', bg: isT ? '#1A1A26' : 'transparent', lc: isT ? '#FFFFFF' : '#94A3B8', fw: isT ? 700 : 500,
+        pips: pe.map(e => ({ bg: TILE[e.kind].bg, ic: TILE[e.kind].ic, icon: TILE[e.kind].icon })),
+        a11y: DAYS[i] + (isT ? ', heute' : '') + ': ' + (pe.length ? pe.map(e => this.ev(e).title).join(', ') : 'kein Eintrag') };
+    });
+    const a11y = es.length ? 'Heute, ' + DAYS[t - 1] + ': ' + es.map(e => e.title).join(', ') + '. ' + (mixed ? '' : (es[0].src === 'appt' ? 'Termin.' : 'Laut deiner Woche.')) : 'Deine Woche: ' + week.filter(c => c.pips.length).map(c => c.a11y).join('; ');
+    return { cap: o.cap || '', capC: o.capC || '#94A3B8', note: o.note || '', date: o.date || 'MI 23. SEPT',
+      none: !!o.none, loading: !!o.loading, err: !!o.err, ok: !o.none && !o.loading && !o.err,
+      hasToday: es.length > 0, today: es, kicker: es.length ? 'HEUTE · ' + DAYS[t - 1].toUpperCase() : 'DEINE WOCHE',
+      hasSource: es.length > 0 && !mixed, source: es.length ? srcTxt(es[0].src) : '',
+      hasAB: !!o.ab, ab: o.ab ? 'WOCHE ' + o.ab.toUpperCase() : '', hasFact: !!o.fact, fact: o.fact || '',
+      hasWeek: list.length > 0, week, todayAnim: o.anim || 'none', a11y };
+  }
+  kraft(o) {
+    const list = o.list || []; let s = null, src = 'laut deiner Woche', plan = false;
+    if (o.appt) { s = this.apptView(o.appt); src = 'Termin'; plan = true; }
+    else { const e = this.sorted(list.filter(x => x.wd === o.today && x.kind === 'strength'))[0]; if (e) { s = this.ev(e); plan = !!this.D.PLANS[e.planId]; } }
+    if (s) return { kicker: 'HEUTE GEPLANT', kc: '#FFB020', dot: '#FFB020', glow: '0 0 8px #FFB020', title: s.title, meta: s.meta.replace(/^Kraft · /, '') + ' · ' + src, cta: plan ? 'STARTEN' : 'FREI STARTEN' };
+    return { kicker: 'ZULETZT', kc: '#94A3B8', dot: '#94A3B8', glow: 'none', title: 'Oberkörper A', meta: 'vor 2 Tagen · 5 Übungen · 52 Min', cta: 'FREI STARTEN' };
+  }
+
+  opt(o) {
+    const sel = !!o.sel, dis = !!o.dis && !sel;
+    return { label: o.label, hasSub: !!o.sub, sub: o.sub || '', icon: o.icon || '', iconBg: o.iconBg || '#1A1A26', iconC: o.iconC || '#CDD3EA',
+      bg: sel ? 'rgba(0,242,254,0.08)' : dis ? '#0B0B0E' : '#1A1A26', bd: sel ? '#00F2FE' : '#232334', bs: dis ? 'dashed' : 'solid',
+      txt: sel ? '#FFFFFF' : dis ? '#94A3B8' : '#CDD3EA', fw: sel ? 600 : 400, dot: sel ? 1 : 0, ring: sel ? '#00F2FE' : '#94A3B8',
+      aria: sel ? 'true' : 'false', ariaDis: o.dis ? 'true' : 'false', cur: o.dis ? 'default' : 'pointer', onClick: o.dis || !o.onClick ? this.noop : o.onClick };
+  }
+  shell(o) {
+    const valid = o.valid !== false;
+    return { cap: o.cap || '', capC: o.capC || '#94A3B8', note: o.note || '', title: o.title, hasSub: !!o.sub, sub: o.sub || '',
+      groups: (o.groups || []).map(g => Object.assign({}, g, { isTiles: g.type === 'tiles', isRadio: g.type === 'radio', isChips: g.type === 'chips', isFacts: g.type === 'facts' })),
+      hasHint: !!o.hint, hint: o.hint || '', hasErr: !!o.err, err: o.err || '',
+      hasPrimary: !!o.primary, primary: o.primary || '', pBg: valid ? 'rgba(0,242,254,0.10)' : '#1A1A26', pBd: valid ? '#00F2FE' : '#232334', pC: valid ? '#00F2FE' : '#94A3B8', pDis: valid ? 'false' : 'true', onPrimary: valid && o.onPrimary ? o.onPrimary : this.noop,
+      hasSecondary: !!o.secondary, secondary: o.secondary || '', onSecondary: o.onSecondary || this.noop,
+      hasDanger: !!o.danger && !o.dangerBtn, hasDangerBtn: !!o.danger && !!o.dangerBtn, danger: o.danger || '', onDanger: o.onDanger || this.noop };
+  }
+  sheetAdd(wd, d, o) {
+    o = o || {};
+    const { DAYS, TILE, PLANS, ACT, DPL } = this.D;
+    const list = o.list || [];
+    const f = (k, v) => o.set ? () => o.set(k, v) : null;
+    const busy = list.some(x => x.wd === wd && x.kind !== 'off' && x.id !== o.editId);
+    const groups = [{ label: 'Art', type: 'tiles', options: [['strength', 'Kraft'], ['cardio', 'Cardio'], ['off', 'Frei']].map(([k, l]) => this.opt({ label: l, sub: k === 'off' && busy ? 'nur an Tagen ohne Eintrag' : '', sel: d.kind === k, dis: k === 'off' && busy, icon: TILE[k].icon, iconBg: TILE[k].bg, iconC: TILE[k].ic, onClick: f('kind', k) })) }];
+    if (d.kind === 'strength') groups.push({ label: 'Plan', type: 'radio', options: [[null, 'Ohne Plan', 'freies Krafttraining']].concat(Object.keys(PLANS).map(k => [k, PLANS[k].name, PLANS[k].n + ' Übungen'])).map(([k, l, s]) => this.opt({ label: l, sub: s, sel: (d.planId || null) === k, onClick: f('planId', k) })) });
+    if (d.kind === 'cardio') {
+      groups.push({ label: 'Aktivität', type: 'chips', options: Object.keys(ACT).map(k => this.opt({ label: ACT[k], sel: d.act === k, onClick: f('act', k) })) });
+      groups.push({ label: 'Dauer · optional', type: 'chips', options: [30, 45, 60, 90].map(n => this.opt({ label: n + ' Min', sel: d.dur === n, onClick: f('dur', n) })) });
+    }
+    if (d.kind === 'strength' || d.kind === 'cardio') groups.push({ label: 'Tageszeit · optional', type: 'chips', options: Object.keys(DPL).map(k => this.opt({ label: DPL[k], sel: d.dp === k, onClick: f('dp', k) })) });
+    const valid = !!d.kind && (d.kind !== 'cardio' || !!d.act);
+    return this.shell({ cap: o.cap, capC: o.capC, note: o.note, title: (o.editId ? 'Eintrag am ' + DAYS[wd - 1] + ' ändern' : 'Eintrag am ' + DAYS[wd - 1]), sub: 'Gilt jeden ' + DAYS[wd - 1] + (o.ab ? ' in Woche ' + o.ab.toUpperCase() : '') + '.', groups, err: o.err, primary: o.editId ? 'Übernehmen' : 'Hinzufügen', valid, onPrimary: o.commit });
+  }
+  sheetEntry(e, list, o) {
+    o = o || {};
+    const v = this.ev(e); const { DAYS, SH } = this.D;
+    const busy = wd => list.some(x => x.wd === wd && x.id !== e.id);
+    const groups = [{ label: 'Verschieben nach', type: 'chips', options: SH.map((s, i) => this.opt({ label: s, sel: e.wd === i + 1, dis: e.wd === i + 1 || (e.kind === 'off' && busy(i + 1)), onClick: o.move ? () => o.move(e.id, i + 1) : null })) }];
+    return this.shell({ cap: o.cap, capC: o.capC, note: o.note, title: v.title, sub: DAYS[e.wd - 1] + ' · ' + v.meta, groups, hint: 'Oder lange drücken und auf einen anderen Tag ziehen.', secondary: 'Ändern', onSecondary: o.edit ? () => o.edit(e.id) : null, danger: 'Eintrag entfernen', onDanger: o.remove ? () => o.remove(e.id) : null });
+  }
+  sheetClear(list, o) {
+    o = o || {};
+    const n = list.length; const d = new Set(list.map(x => x.wd)).size; const p = list.filter(x => x.kind === 'strength' && this.D.PLANS[x.planId]).length;
+    const lines = [n + (n === 1 ? ' Eintrag' : ' Einträge') + ' an ' + d + (d === 1 ? ' Tag ' : ' Tagen ') + (n === 1 ? 'wird' : 'werden') + ' entfernt.', p ? p + ' davon mit Plan. Deine Pläne selbst bleiben.' : 'Deine Pläne bleiben, wie sie sind.', 'Das lässt sich nicht rückgängig machen.'];
+    return this.shell({ cap: o.cap, capC: o.capC, note: o.note, title: o.ab ? 'Woche ' + o.ab.toUpperCase() + ' leeren?' : 'Ganze Woche leeren?', sub: 'Montag bis Sonntag, alle Einträge.', groups: [{ label: 'Was passiert', type: 'facts', options: lines.map(l => ({ label: l })) }], err: o.err, primary: 'Abbrechen', onPrimary: o.cancel, danger: 'Woche endgültig leeren', dangerBtn: true, onDanger: o.confirm });
+  }
+
+  openAdd(wd) { this.setState({ sheet: { mode: 'add', wd }, draft: { kind: null, planId: null, act: null, dur: null, dp: null }, sheetErr: null }); }
+  openEntry(id) { this.setState({ sheet: { mode: 'entry', id }, sheetErr: null }); }
+  openEdit(id) {
+    const e = this.state[this.key()].find(x => x.id === id); if (!e) return;
+    this.setState({ sheet: { mode: 'add', wd: e.wd, editId: id }, draft: { kind: e.kind, planId: this.D.PLANS[e.planId] ? e.planId : null, act: e.act || null, dur: e.dur || null, dp: e.dp || null }, sheetErr: null });
+  }
+  closeSheet() { this.setState({ sheet: null }); }
+  setDraft(k, v) {
+    this.setState(s => {
+      const d = Object.assign({}, s.draft);
+      if (k === 'kind') { if (d.kind === v) return null; return { draft: { kind: v, planId: null, act: null, dur: null, dp: d.dp }, sheetErr: null }; }
+      if ((k === 'dur' || k === 'dp') && d[k] === v) d[k] = null; else d[k] = v;
+      return { draft: d, sheetErr: null };
+    });
+  }
+  write(key, next, prev, o) {
+    const fail = !!this.props.saveFailure && !this.state.failed;
+    clearTimeout(this.snT); clearTimeout(this.failT);
+    this.setState(s => ({ [key]: next, uid: s.uid + 1, n: s.n + 1, flash: o.flashId ? { id: o.flashId, n: s.n + 1 } : null, snack: fail || !o.text ? null : { text: o.text, key, prev, canUndo: o.undo !== false }, dayErr: null, sheetErr: null }));
+    if (fail) this.failT = setTimeout(() => { this.setState({ [key]: prev, failed: true, flash: null }); if (o.onFail) o.onFail(); }, 650);
+    else if (o.text) this.snT = setTimeout(() => this.setState({ snack: null }), 6000);
+  }
+  commitAdd() {
+    const st = this.state; const d = st.draft; const sh = st.sheet; if (!d || !d.kind || !sh) return;
+    const key = this.key(); const prev = st[key]; const wd = sh.wd;
+    const base = { kind: d.kind, wd, planId: d.kind === 'strength' ? d.planId : null, act: d.kind === 'cardio' ? d.act : null, dur: d.kind === 'cardio' ? d.dur : null, dp: d.kind === 'off' ? null : d.dp };
+    if (base.planId) base.planName = this.D.PLANS[base.planId].name;
+    let list, id, replaced = false;
+    if (sh.editId) { id = sh.editId; list = prev.map(x => x.id === id ? Object.assign({}, x, base) : x); }
+    else {
+      id = 'u' + st.uid;
+      replaced = d.kind !== 'off' && prev.some(x => x.wd === wd && x.kind === 'off');
+      list = prev.filter(x => !(d.kind !== 'off' && x.wd === wd && x.kind === 'off')).concat([Object.assign({}, base, { id, ord: st.uid })]);
+    }
+    const title = this.ev(base).title; const day = this.D.DAYS[wd - 1];
+    this.setState({ sheet: null });
+    this.write(key, list, prev, { flashId: id, text: sh.editId ? title + ' am ' + day + ' geändert' : title + ' am ' + day + ' eingetragen' + (replaced ? ' — „Frei" ersetzt' : ''), onFail: () => this.setState({ sheet: sh, draft: d, sheetErr: '„' + title + '" nicht gespeichert — der Server hat abgelehnt. ' + day + ' bleibt wie vorher.' }) });
+  }
+  moveTo(id, wd) {
+    const key = this.key(); const prev = this.state[key]; const e = prev.find(x => x.id === id); if (!e || e.wd === wd) return;
+    const list = prev.filter(x => !(e.kind !== 'off' && x.wd === wd && x.kind === 'off')).map(x => x.id === id ? Object.assign({}, x, { wd }) : x);
+    const t = this.ev(e).title; const D = this.D.DAYS;
+    this.setState({ sheet: null });
+    this.write(key, list, prev, { flashId: id, text: t + ' auf ' + D[wd - 1] + ' verschoben', onFail: () => this.setState({ dayErr: { wd: e.wd, id, to: wd, text: '„' + t + '" nicht auf ' + D[wd - 1] + ' verschoben — der Server hat abgelehnt. Steht wieder am ' + D[e.wd - 1] + '.' } }) });
+  }
+  retryMove() { const r = this.state.dayErr; if (r) this.moveTo(r.id, r.to); }
+  remove(id) {
+    const key = this.key(); const prev = this.state[key]; const e = prev.find(x => x.id === id); if (!e) return;
+    this.setState({ sheet: null });
+    this.write(key, prev.filter(x => x.id !== id), prev, { text: '„' + this.ev(e).title + '" am ' + this.D.DAYS[e.wd - 1] + ' entfernt' });
+  }
+  confirmClear() {
+    const key = this.key(); const prev = this.state[key];
+    this.setState({ sheet: null });
+    this.write(key, [], prev, { text: 'Woche geleert', undo: false, onFail: () => this.setState({ sheet: { mode: 'clear' }, sheetErr: 'Nicht geleert — der Server hat abgelehnt. Die Woche steht unverändert.' }) });
+  }
+  undo() { const sn = this.state.snack; if (!sn) return; clearTimeout(this.snT); this.setState({ [sn.key]: sn.prev, snack: null, flash: null }); }
+  midnight() {
+    this.setState(s => { let t = s.today + 1, w = s.wOff; if (t > 7) { t = 1; w++; } return { today: t, wOff: w, midN: s.midN + 1, view: s.alt ? (w % 2 === 0 ? 'a' : 'b') : 'a', dayErr: null }; });
+  }
+  dateLabel(wOff, t) {
+    const dt = new Date(2026, 8, 21 + wOff * 7 + t - 1);
+    const M = ['JAN', 'FEB', 'MÄRZ', 'APR', 'MAI', 'JUNI', 'JULI', 'AUG', 'SEPT', 'OKT', 'NOV', 'DEZ'];
+    return this.D.SH[t - 1].toUpperCase() + ' ' + dt.getDate() + '. ' + M[dt.getMonth()];
+  }
+  liveSheet() {
+    const st = this.state; const sh = st.sheet; if (!sh) return null;
+    const list = st[this.key()];
+    if (sh.mode === 'add') return this.sheetAdd(sh.wd, st.draft, { list, set: (k, v) => this.setDraft(k, v), commit: () => this.commitAdd(), err: st.sheetErr, ab: st.alt ? st.view : null, editId: sh.editId });
+    if (sh.mode === 'entry') { const e = list.find(x => x.id === sh.id); if (!e) return null; return this.sheetEntry(e, list, { move: (id, wd) => this.moveTo(id, wd), remove: id => this.remove(id), edit: id => this.openEdit(id) }); }
+    if (sh.mode === 'clear') return this.sheetClear(list, { cancel: () => this.closeSheet(), confirm: () => this.confirmClear(), err: st.sheetErr, ab: st.alt ? st.view : null });
+    return null;
+  }
+
+  decisions() {
+    const Q = { cardBd: 'rgba(0,242,254,0.35)', bg: 'rgba(0,242,254,0.08)', border: 'rgba(0,242,254,0.45)', c: '#00F2FE' };
+    const N = { cardBd: '#232334', bg: '#14141D', border: '#232334', c: '#CDD3EA' };
+    const R = { cardBd: 'rgba(240,34,119,0.3)', bg: 'rgba(240,34,119,0.06)', border: 'rgba(240,34,119,0.4)', c: '#F02277' };
+    const d = (s, n, title, body, no) => Object.assign({ n, title, body, hasNo: !!no, no: no || '' }, s);
+    return [
+      d(Q, 'F1', 'Wie sieht eine selbst gebaute Woche aus? — Sieben Tagesabschnitte untereinander, Tagesname ausgeschrieben.', 'Eine Liste bricht bei 200 % nie; Spalten schon bei 100 % nicht (sieben 48-dp-Ziele brauchen 384 dp, eine Karte bietet 290). Senkrecht trägt jede Anzahl Einträge je Tag — der zweite Eintrag von Person 4 ist eine Zeile mehr, keine halbe Spalte. Anlegen: Plus am Tag → Blatt. Verschieben: Eintrag antippen → Tag-Chips, ein Tipp; Ziehen als Abkürzung; Screenreader-Aktionen „Auf … verschieben", „früher", „später". Entfernen im selben Blatt, mit Rückgängig.', 'Sieben-Spalten-Raster (bricht, kürzt Namen); horizontal scrollender Tagesstreifen (Querscrollen verboten, versteckt vier Tage); Kalender (ein Rhythmus hat keine Daten); Drag als einziger Weg.'),
+      d(Q, 'F2', '„Heute" zweimal — eine Ableitung, zwei Filter.', 'todayPlan(datum) liest planning/week und schedule einmal. Das Hybrid-Widget zeigt alles, der Kraft-Tab nur Kraft-Einträge. Beide nennen dieselbe Quelle („laut deiner Woche" / „Termin"). Am ersten Tag mit beiden Datenquellen sagen sie dasselbe, weil sie dieselbe Liste lesen — nicht zwei ähnliche. Ist heute nur Cardio oder „Frei", fällt der Kraft-Tab auf „Zuletzt" zurück: er sagt weniger, nie etwas anderes.', 'Kraft-Tab zeigt auch Cardio (er ist der Kraft-Ort, einen Cardio-Start hat er nicht); zwei getrennte Ableitungen (laufen beim ersten Sonderfall auseinander); Kraft-Tab sagt „Heute Cardio" (wäre eine Aussage über eine fremde Spur).'),
+      d(Q, 'F3', 'Das Widget an einem Tag ohne Eintrag — „Frei" ist eine Aussage, eine Lücke nicht.', 'Wer einen Tag als „Frei" einträgt, liest „Heute · Frei · laut deiner Woche" — das ist seine Angabe und wird genannt wie jede andere. Ein Tag ohne Eintrag zeigt nur die Woche: die App leitet aus einer Lücke keinen Ruhetag ab, weil sie nicht weiss, ob die Lücke gewollt ist. Das Wort ist „Frei", nicht „Ruhetag" (Board 11: ein Tag mit Yoga ist kein Ruhetag). In die Planung führt eine Fusszeile „Deine Woche ›" — Navigation, gleich laut an jedem Tag, kein Aufruf.', '„Heute nichts geplant"; automatischer Ruhetag aus der Lücke; Startknopf im Widget; ganzes Widget als Tap-Ziel (verwechselt mit Starten).'),
+      d(Q, 'F4', 'Die Woche und das Ist — ja, als Tatsache neben dem Tag, nie am Eintrag.', '„Trainiert · Lauf, 35 Min" steht unter dem Tag, auch wenn der Plan Kraft sagte; Plan und Ist werden nicht abgeglichen. Ein geplanter, nicht trainierter Tag sieht aus wie ein künftiger: keine Zeile, kein Grau, kein Wort. Unter der Woche der Bisher-Block nach F3: „1 Kraft-Einheit · in deiner Woche 3" — zwei Tatsachen, Mehr und Weniger gleich gesetzt. Nur auf der Planungsseite; das Widget zeigt nur den Plan und höchstens „Heute schon erfasst", weil „Verhältnis" das Ist der Woche schon trägt.', 'Häkchen am Eintrag (macht den Plan zur Liste zum Abhaken); verblasste vergangene Tage; „verpasst" / „ausgelassen"; Bruch „1/3" oder Füllbalken; Wochenzähler im Kopf.'),
+      d(Q, 'F5', 'Der leere Anfang — die sieben Tage sind das Werkzeug, kein Platzhalter.', 'Beim ersten Öffnen stehen Montag bis Sonntag mit je einem Plus, darüber ein Satz, was die Seite ist. Die Bezugszeile sagt „Trainingsangaben · Nicht angegeben — freiwillig", in derselben Höhe und Farbe wie beantwortet — erkennbar als Möglichkeit, ohne Punkt, ohne Hervorhebung. Im Hybrid-Tab rendert kein Widget.', 'Leerkarte mit Bild; „Leg los" / „Plane deine erste Woche"; Einrichtungsassistent (wäre ein zweites Briefing); Bezugszeile als Karte mit Cyan-Rand (hebt die Pflicht hervor, die es nicht gibt).'),
+      d(Q, 'F6', 'Das Briefing als Grundlage — Bezug, nicht Vorlage.', 'Keine Vorbelegung, keine Geistereinträge: beides wäre ein Vorschlag, und Vorschläge sind Board 20. Die Angabe steht als Bezugszeile oben, mit Datum und „angegeben" bzw. „vorgenommen". Wer „Mo Mi Fr" angegeben hat, liest es dort und trägt es in drei Tipps ein. Die Seite verlinkt die Trainingsangaben (gleiche Route), sie fragt nichts davon selbst.', 'Vorbelegen (schreibt ohne Handlung und sieht danach aus wie eigene Planung); hohle Geistereinträge an den Angabe-Tagen (bitten um Bestätigung = Aufruf); Knopf „Aus Angaben übernehmen" (das ist der Vorschlag).'),
+      d(N, '7', 'Termin schlägt Rhythmus — je Spur, nicht je Tag.', 'schedule kennt nur Krafteinheiten (Bestand der Vorgänger-App). Ersetzte ein Termin den ganzen Tag, verschwände der Morgenlauf von Person 4. Deshalb ersetzt er nur die Kraft-Einträge und ein „Frei"; Cardio bleibt. Bei gemischter Quelle nennt jede Zeile ihre eigene.'),
+      d(N, '8', '„Frei" ist eine Eintragsart, und sie ist exklusiv.', 'Ein Tag ist entweder frei oder hat Einträge. Training auf einen freien Tag legen ersetzt „Frei" (die Snackbar sagt es, Rückgängig stellt beides her); „Frei" auf einem belegten Tag ist gesperrt und nennt den Grund.'),
+      d(N, '9', 'Kein Fach „ohne festen Tag".', 'Es wäre briefing.perWeek in zweiter Form — genau die doppelte Eingabe, die Board 18 verbietet. Person 3 plant keine Tage; ihre Planung bleibt leer, das Widget rendert nicht, nichts fragt nach.'),
+      d(N, '10', 'Wechselwochen nur, wenn das Briefing es sagt.', 'Der Anker liegt in planning/goal; die Planung rechnet, fragt nicht. Ohne diese Angabe gibt es keinen Umschalter. Geht das Briefing zurück auf „jede Woche gleich", bleibt Woche B gespeichert, gilt aber nicht — eine Zeile unter der Woche sagt das.'),
+      d(N, '11', 'Einstieg: Kalender-Symbol im Hybrid-Kopf.', 'Weil ein Block ohne Daten nicht rendert, braucht die Planung einen Weg, der nicht vom Widget abhängt. Dazu die Widget-Fusszeile und Einstellungen › Training › Woche. Board 17s Kachel „Training planen" heisst künftig „Pläne". Kein vierter Tab.'),
+      d(N, '12', 'Gelöschter Plan: Schnappschuss-Name, neutral.', 'Der Eintrag bleibt Krafttraining und nennt, was er vorher war — #CDD3EA, ohne Warnsymbol. Nach dem nächsten Ändern fällt die Notiz weg. Das Widget und der Kraft-Tab lösen genauso auf („FREI STARTEN").'),
+      d(N, '13', 'Tageszeit statt Uhrzeit.', 'Drei Tageszeiten reichen für die Reihenfolge von Person 4. Eine Uhrzeit liest sich wie eine Verabredung, die man verpassen kann.'),
+      d(N, '14', 'Keine Bemerkung zur Menge.', 'Sieben Kraft-Einträge ohne freien Tag sehen aus wie jede andere Woche. Kein Zähler je Spur im Kopf der Woche, damit nichts als Bilanz gelesen wird; Zahlen stehen nur im Bisher-Block, dort mit ihrer Grundlage.'),
+      d(N, '15', 'Das Widget schreibt nichts und startet nichts.', 'Starten bleibt beim Startblock (Kraft) und im Cardio-Tab. Zwei Start-Orte für dieselbe Einheit liefen auseinander. Das Widget liest den optimistischen Stand mit und hat deshalb keinen eigenen Speicherfehler.'),
+      d(N, '16', 'Flächen-Budget.', 'Planungsseite: 0 Gradient-Karten, 1 BackdropFilter (Kopfleiste); der Blatt-Scrim blurrt nicht. Kraft-Tab behält seine eine Gradient-Karte (Startblock). Hybrid-Widget: keine.'),
+      d(R, '✕', 'Verworfen: Datierter Wochenplan („KW 39: …").', 'Ein Rhythmus mit Daten wäre ein Kalender, der vorausgefüllt werden müsste — und bei jeder Änderung für alle künftigen Wochen neu. „Heute" wird abgeleitet, nie angelegt.'),
+      d(R, '✕', 'Verworfen: Plan-Ist-Ampel im Wochenstreifen des Widgets.', 'Jede Markierung vergangener Tage (gefüllt / leer) wird als erfüllt / versäumt gelesen, egal welche Farbe. Der Streifen zeigt den Plan, sonst nichts.')
+    ];
+  }
+
+  renderVals() {
+    const st = this.state; const red = !!this.props.reducedMotion;
+    const { W, BR, FACTS, DAYS } = this.D;
+    const key = this.key(); const list = st[key] || [];
+    const curL = st.wOff % 2 === 0 ? 'a' : 'b';
+    const isCur = !st.alt || st.view === curL;
+    const facts = {};
+    if (st.wOff === 0 && isCur) Object.keys(st.facts || {}).forEach(k => { if (+k <= st.today) facts[k] = st.facts[k]; });
+    const flash = st.flash && !red ? { id: st.flash.id, anim: 'entryIn' + (st.flash.n % 2) + ' 320ms cubic-bezier(0.33,1,0.68,1) both', scan: (st.flash.n % 2 ? 'scanA' : 'scanB') + ' 760ms cubic-bezier(0.22,1,0.36,1) 240ms both' } : null;
+    const sum = this.sumView(list, facts);
+    const kw = 39 + st.wOff;
+    const livePage = Object.assign({
+      aurora: red ? 'none' : 'auroraDrift 16s ease-in-out infinite',
+      sub: st.alt ? 'Zwei Wochen im Wechsel, wie in deinen Trainingsangaben.' : 'Was an welchem Wochentag üblich ist. Gilt jede Woche, bis du es änderst.',
+      hasMeta: list.length > 0, meta: st.n ? 'ZULETZT GEÄNDERT · HEUTE' : 'ZULETZT GEÄNDERT · 14. SEPT',
+      hasAB: st.alt, abOpts: this.abOpts(st.view, v => this.setState({ view: v, dayErr: null })), abMeta: 'DIESE WOCHE (KW ' + kw + ') IST WOCHE ' + curL.toUpperCase(),
+      weekHead: st.alt ? 'WOCHE ' + st.view.toUpperCase() + ' · GILT JEDE ZWEITE WOCHE' : 'GILT JEDE WOCHE',
+      days: this.days(list, { today: isCur ? st.today : null, facts, err: st.dayErr, onAdd: wd => this.openAdd(wd), onEntry: id => this.openEntry(id), flash, retry: () => this.retryMove() }),
+      hasSum: sum.length > 0, sumHead: 'DIESE WOCHE BISHER · KW ' + kw, sum,
+      used: 'GENUTZT VON · HYBRID (HEUTE) · KRAFT (TRAINIEREN)', hasAny: list.length > 0, onClear: () => this.setState({ sheet: { mode: 'clear' }, sheetErr: null })
+    }, this.briefView(st.brief));
+    const wList = st.alt ? st[curL] : st.a;
+    const lw = this.widget({ list: wList, today: st.today, ab: st.alt ? curL : null, date: this.dateLabel(st.wOff, st.today), none: wList.length === 0, anim: st.midN && !red ? 'todayIn' + (st.midN % 2) + ' 400ms cubic-bezier(0.33,1,0.68,1) both' : 'none' });
+    const lk = this.kraft({ list: wList, today: st.today });
+    const sh = this.liveSheet();
+
+    const T = 3;
+    const pages = [
+      this.page({ cap: 'B1 · LEER — NIE GEPLANT', list: [], today: T, note: 'Die sieben Tage sind das Werkzeug, kein Platzhalter: Name und Plus, sonst nichts. Kein „Leg los", keine Leerkarte. Die Bezugszeile sagt „Nicht angegeben — freiwillig" in derselben Höhe wie beantwortet; sie ist Weg, nicht Pflicht.' }),
+      this.page({ cap: 'B2 · HALB GEFÜLLT — DREI TAGE', list: W.halb, today: T, brief: BR.halb, edited: '2. SEPT', note: 'Ein belegter und ein leerer Tag unterscheiden sich nur durch die Eintragszeile. Leere Tage bleiben 48 dp hoch — kompakt, nicht grau, nicht gestrichelt.' }),
+      this.page({ cap: 'B3 · VOLL — PERSON 1 · MIT DEM IST DIESER WOCHE', capC: '#00F2FE', list: W.p1, today: T, brief: BR.p1, facts: FACTS.p1, note: 'Montag trainiert wie geplant, Dienstag nicht, Mittwoch Lauf statt Kraft. Die Tatsachenzeile steht unter dem Tag, nie am Eintrag — Plan und Ist werden nicht abgeglichen. Dienstag sieht aus wie Donnerstag. Der Bisher-Block nach F3: zwei Tatsachen, kein Bruch.' }),
+      this.page({ cap: 'B4 · VOLL — PERSON 4 · ZWEI EINTRÄGE AM TAG', capC: '#00F2FE', list: W.p4, today: T, brief: BR.p4, note: 'Reihenfolge nach Tageszeit (morgens → mittags → abends → ohne), dann nach Anlegen. Ein zweiter Eintrag ist eine Zeile mehr, keine halbe Spalte. „Frei" am Sonntag ist eine eigene Angabe.' }),
+      this.page({ cap: 'B5 · WECHSELWOCHEN — WOCHE A (DIESE)', capC: '#AB6BF0', list: W.altA, today: T, alt: true, view: 'a', brief: BR.alt, note: 'Der Umschalter erscheint nur, weil das Briefing „zwei Wochen im Wechsel" sagt; der Anker liegt dort. Unter dem Umschalter die Tatsache, welche diese Woche ist — keine Farbe für A oder B.' }),
+      this.page({ cap: 'B6 · WECHSELWOCHEN — WOCHE B', capC: '#AB6BF0', list: W.altB, alt: true, view: 'b', brief: BR.alt, note: 'Woche B trägt kein „Heute" und kein Ist, weil sie diese Woche nicht gilt. Gleiche Form, gleicher Ton — B ist nicht die Nebenwoche.' }),
+      this.page({ cap: 'B7 · PERSON 2 — NUR KRAFT, VIERMAL', list: W.p2, today: T, brief: BR.p2, note: 'Cardio kommt nirgends vor: keine Spur, keine leere Zeile, kein Zähler „0 Cardio". Die Planung hat keine Spuren — nur Tage. Das Blatt bietet Cardio weiterhin an; ein Angebot ist keine Spur.' }),
+      this.page({ cap: 'B8 · PERSON 3 — NUR CARDIO, JEDE WOCHE ANDERS', list: [], today: T, brief: BR.p3, note: 'Plant keine festen Tage — und muss es nicht. Die Seite bleibt wie B1, die Angabe steht als Bezug darüber. Kein Fach „ohne festen Tag": das wäre die Häufigkeit aus dem Briefing ein zweites Mal. Im Hybrid-Tab rendert kein Widget.' }),
+      this.page({ cap: 'B9 · NACH EINER PAUSE — EIN VORHABEN', list: W.pause, today: T, brief: BR.pause, edited: '2. SEPT', note: 'Dieselbe Seite. Nur die Bezugszeile sagt „vorgenommen" statt „angegeben" (Board 18, describes = intended). Noch nichts trainiert → kein Bisher-Block, kein „0 von 2".' }),
+      this.page({ cap: 'B10 · EIN EINTRAG, DESSEN PLAN GELÖSCHT WURDE', list: W.del, today: T, brief: BR.halb, note: 'Der Normalfall, kein Fehler: der Eintrag bleibt Krafttraining, die Notiz nennt, was er vorher war — in #CDD3EA, ohne Warnsymbol, ohne Magenta. Nach dem nächsten Ändern fällt die Notiz weg.' }),
+      this.page({ cap: 'B11 · LÄDT', loading: true, brief: BR.p1, note: 'Skelett ab 300 ms in Tagesform: sieben Zeilen, je ein Plus-Platz. Titel, Satz und Bezugszeile brauchen die Woche nicht und stehen sofort. Puls nach 18b.' }),
+      this.page({ cap: 'B12 · FEHLER BEIM LADEN', capC: '#F02277', loadErr: true, brief: BR.p1, note: 'Keine leeren Tage als Rückfall: sieben leere Tage sähen aus wie „nie geplant", und wer dann anlegt, schreibt womöglich neben eine gespeicherte Woche. Offline mit Cache: gecachte Woche steht, Schreiben wird eingereiht.' }),
+      this.page({ cap: 'B13 · FEHLER BEIM SPEICHERN — VERSCHIEBEN', capC: '#F02277', list: W.p1, today: T, brief: BR.p1, err: { wd: 2, text: '„Lauf" nicht auf Donnerstag verschoben — der Server hat abgelehnt. Steht wieder am Dienstag.' }, note: 'Beim Verschieben ist der Tag das Formular: der Eintrag fliegt zurück, die Fehlerzeile steht am Ursprungstag, bis zum nächsten Tippen. „Erneut versuchen" wiederholt genau diese Verschiebung. Kein Toast.' })
+    ];
+    const sheets = [
+      this.sheetAdd(4, { kind: 'cardio', planId: null, act: 'run', dur: 45, dp: 'morning' }, { list: W.halb, cap: 'C1 · EINTRAG ANLEGEN — CARDIO', note: 'Art zuerst, dann nur, was zu ihr gehört: Cardio fragt Aktivität (Pflicht) und Dauer (optional), nie einen Plan. Tageszeit optional — sie ordnet, sie verabredet nicht. Kein Feld ist vorbelegt.' }),
+      this.sheetAdd(1, { kind: 'strength', planId: 'p1', act: null, dur: null, dp: 'evening' }, { list: W.p4.filter(x => x.wd === 1 && x.kind === 'cardio'), cap: 'C2 · ZWEITER EINTRAG AM TAG — KRAFT MIT PLAN', note: 'Montag hat schon den Morgenlauf. „Frei" ist deshalb gesperrt und sagt warum — gestrichelt, mit Grund, nicht nur blass. Die Planliste kommt aus Board 05; „Ohne Plan" steht oben und ist gewählt, solange nichts anderes gewählt ist — das ist kein Vorbelegen, sondern die Bedeutung von „kein Plan".' }),
+      this.sheetEntry(W.p1[1], W.p1, { cap: 'C3 · EINTRAG ANTIPPEN — VERSCHIEBEN OHNE ZIEHEN', capC: '#00F2FE', note: 'Der primäre Weg. Ein Tipp auf einen Tag-Chip verschiebt sofort, schliesst das Blatt und zeigt die Snackbar mit Rückgängig. Der eigene Tag ist gewählt und gesperrt. Ziehen ist dieselbe Handlung als Abkürzung — nie der einzige Weg.' }),
+      this.sheetAdd(4, { kind: 'cardio', planId: null, act: 'run', dur: 45, dp: 'morning' }, { list: W.halb, err: '„Lauf" nicht gespeichert — der Server hat abgelehnt. Donnerstag bleibt wie vorher.', cap: 'C4 · FEHLER BEIM SPEICHERN — ZURÜCK INS FORMULAR', capC: '#F02277', note: 'Optimistisch: der Lauf stand sofort am Donnerstag. Kommt die Ablehnung, verschwindet er dort (Ausblenden 120 + 240) und das Blatt öffnet sich mit denselben Werten. „Hinzufügen" ist der Wiederholen-Knopf. Kein Toast.' }),
+      this.sheetClear(W.p1, { cap: 'C5 · WOCHE LEEREN — STUFE 2 NACH DEM TIPP IN DER FUSSZEILE', capC: '#F02277', note: 'Stufe 1 ist der Tipp „Woche leeren" in der Fusszeile, Stufe 2 dieses Blatt: es zählt die Folgen, bevor es etwas tut. Der sichere Knopf steht oben und ist Cyan, der rote unten. Kein Rückgängig — deshalb zwei Stufen. Pläne werden nie mitgelöscht.' })
+    ];
+    const widgets = [
+      this.widget({ cap: 'D1 · LEER — NIE GEPLANT: RENDERT NICHT', none: true, note: 'Kein Block, kein „Plane deine Woche". Der Tab beginnt mit Bereitschaft. Die Planung bleibt über das Kalender-Symbol erreichbar, das unabhängig vom Inhalt im Kopf steht.' }),
+      this.widget({ cap: 'D2 · HALB GEFÜLLT — HEUTE MIT EINTRAG', list: W.halb, today: T, note: 'Heute: der Lauf. Darunter die Woche als Streifen — nur der Plan, kein Ist (das Ist dieser Woche zeigt „Verhältnis" darunter). Heute trägt Rand und Weiss, nicht Cyan: es ist ein Ort, keine Handlung.' }),
+      this.widget({ cap: 'D3 · VOLL — PERSON 1 · HEUTE SCHON TRAINIERT', capC: '#00F2FE', list: W.p1, today: T, fact: 'Heute schon erfasst · Lauf, 35 Min · 07:05', note: 'Geplant Kraft, erfasst Lauf: zwei Tatsachen untereinander, kein Abgleich, kein Häkchen am Plan. Das Widget sagt nicht „erledigt" und nicht „noch offen".' }),
+      this.widget({ cap: 'D4 · VOLL — PERSON 4 · ZWEI EINTRÄGE HEUTE', capC: '#00F2FE', list: W.p4, today: T, note: 'Zwei Zeilen in der Reihenfolge der Tageszeit. Im Streifen stapeln sich zwei Pips je Zelle; die Zellen wachsen gemeinsam.' }),
+      this.widget({ cap: 'D5 · WECHSELWOCHEN — WOCHE A', capC: '#AB6BF0', list: W.altA, today: T, ab: 'a', note: 'Die Marke „WOCHE A" steht nur bei Wechselwochen. Der Streifen zeigt die geltende Woche, nie beide.' }),
+      this.widget({ cap: 'D6 · HEUTE OHNE EINTRAG', list: W.halb, today: 4, date: 'DO 24. SEPT', note: 'Kein Heute-Block, keine leere Zeile, kein „nichts geplant". Der Kicker wird „DEINE WOCHE", der Rand im Streifen steht auf Donnerstag. Eine Lücke ist keine Aussage.' }),
+      this.widget({ cap: 'D7 · HEUTE FREI — LAUT DEINER WOCHE', list: W.p1, today: 7, date: 'SO 27. SEPT', note: '„Frei" steht nur, weil es jemand eingetragen hat — dann ist es eine Aussage und wird genannt wie jeder andere Eintrag. Neutrale Kachel, kein Grün, kein „Ruhetag".' }),
+      this.widget({ cap: 'D8 · PLAN GELÖSCHT', list: W.del, today: 1, date: 'MO 21. SEPT', note: 'Das Widget löst beim Lesen auf wie die Seite: Krafttraining, ohne Plan, mit derselben Notiz. Der Kraft-Tab zeigt „FREI STARTEN".' }),
+      this.widget({ cap: 'D9 · LÄDT', loading: true, note: 'Skelett in Widget-Form, erst ab 300 ms. Kommt die Woche leer zurück, fällt der Block weg, ohne Nachruf.' }),
+      this.widget({ cap: 'D10 · FEHLER BEIM LADEN', capC: '#F02277', err: true, note: 'Ein Ladefehler ist nicht „keine Daten": das Weglassen würde behaupten, es sei nichts geplant. Deshalb eine Zeile, 56 dp, mit „Erneut versuchen" — nicht mehr.' }),
+      this.widget({ cap: 'D11 · NACH FEHLER BEIM SPEICHERN', capC: '#F02277', list: W.halb, today: T, note: 'Das Widget schreibt nie. Es liest den optimistischen Stand mit und springt bei Ablehnung mit der Seite zurück — ohne eigene Fehlermeldung, weil der Fehler dort steht, wo die Handlung war.' })
+    ];
+    const twice = [
+      { cap: 'E1 · RHYTHMUS · MITTWOCH, PERSON 1', k: this.kraft({ list: W.p1, today: 3 }), w: this.widget({ list: W.p1, today: 3 }), note: 'Beide sagen Unterkörper B, beide „laut deiner Woche". Der Kraft-Tab startet ihn; das Widget sagt nur, dass er ansteht.' },
+      { cap: 'E2 · ALTER TERMIN + RHYTHMUS · MITTWOCH, PERSON 4', k: this.kraft({ appt: { name: 'Oberkörper A', n: 5 } }), w: this.widget({ list: W.p4, today: 3, appt: { name: 'Oberkörper A', n: 5 } }), note: 'Der Termin aus schedule ersetzt nur die Kraft-Einträge des Tages; der Morgenlauf bleibt. Bei gemischter Quelle nennt jede Zeile ihre eigene.' },
+      { cap: 'E3 · NUR CARDIO HEUTE · DIENSTAG, PERSON 1', k: this.kraft({ list: W.p1, today: 2 }), w: this.widget({ list: W.p1, today: 2 }), note: 'Der Kraft-Tab kennt keinen Cardio-Eintrag und fällt auf „Zuletzt" zurück. Er sagt nicht „heute kein Kraft" — er sagt weniger als das Widget, nie etwas anderes.' },
+      { cap: 'E4 · FREI LAUT PLAN · SONNTAG, PERSON 1', k: this.kraft({ list: W.p1, today: 7 }), w: this.widget({ list: W.p1, today: 7 }), note: '„Frei" gehört dem Widget. Der Kraft-Tab bleibt beim Board-17-Fall ohne Plan; „Frei starten" bleibt möglich — ein freier Tag ist kein Verbot.' }
+    ];
+    return {
+      noop: this.noop,
+      livePages: [livePage], liveWidgets: [lw], lk,
+      liveSheets: sh ? [sh] : [],
+      snacks: st.snack ? [{ text: st.snack.text, canUndo: st.snack.canUndo }] : [],
+      undo: () => this.undo(), closeSheet: () => this.closeSheet(), midnight: () => this.midnight(), reset: () => this.setState(this.init(this.props.startState ?? 'Person 1')),
+      modeLabel: 'HEUTE: ' + this.dateLabel(st.wOff, st.today) + ' · KW ' + kw + (st.alt ? ' · WOCHE ' + curL.toUpperCase() : '') + (this.props.saveFailure ? ' · NÄCHSTES SPEICHERN SCHEITERT' + (st.failed ? ' (SCHON GESCHEHEN)' : '') : ''),
+      snackAnim: red ? 'none' : 'snackIn 240ms cubic-bezier(0.33,1,0.68,1) both',
+      sheetAnim: red ? 'none' : 'sheetUp 320ms cubic-bezier(0.33,1,0.68,1) both',
+      scrimAnim: red ? 'none' : 'fadeIn 320ms ease-out both',
+      errAnim: red ? 'none' : 'errFlicker 320ms ease-out 1',
+      skelAnim: red ? 'none' : 'skelPulse 1400ms ease-in-out infinite',
+      skel: ['34%', '46%', '30%', '52%', '38%', '44%', '28%'].map((w, i) => ({ w, line: i ? '#232334' : 'transparent' })),
+      pages, sheets, widgets, twice,
+      demoDays: ['Dienstag', 'Mittwoch', 'Donnerstag'].map((n, i) => ({ n, line: i ? '#232334' : 'transparent' })),
+      demoStrip: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((d, i) => ({ d, bg: [1, 0, 1, 0, 1, 0, 2][i] === 1 ? '#FFB020' : [1, 0, 1, 0, 1, 0, 2][i] === 2 ? '#1A1A26' : '#7A2BDB' })),
+      demoFlip: red ? 'none' : 'flipMove 3.2s cubic-bezier(0.22,1,0.36,1) infinite',
+      demoFlipScan: red ? 'none' : 'flipScan 3.2s linear infinite',
+      demoDrag: red ? 'none' : 'dragMove 3.2s cubic-bezier(0.22,1,0.36,1) infinite',
+      demoDrop: red ? 'none' : 'dropLine 3.2s linear infinite',
+      demoCreate: red ? 'none' : 'createIn 3.2s cubic-bezier(0.33,1,0.68,1) infinite',
+      demoCreateScan: red ? 'none' : 'createScan 3.2s linear infinite',
+      demoMidOld: red ? 'none' : 'midOld 6.4s cubic-bezier(0.4,0,1,1) infinite',
+      demoMidNew: red ? 'none' : 'midNew 6.4s cubic-bezier(0.33,1,0.68,1) infinite',
+      demoMidRing: red ? 'none' : 'midRing 6.4s cubic-bezier(0.22,1,0.36,1) infinite',
+      spec: [
+        { el: 'Kopfleiste', h: '56 · sticky', surface: 'rgba(5,5,7,0.82) + BackdropFilter σ 14 — der einzige der Seite', type: 'Ortszeile Mono 11 · #AB6BF0, Punkt 6 mit Schein', tap: 'Zurück 48 × 48' },
+        { el: 'Titelblock', h: '18 oben · 16 seitlich', surface: 'Grund #050507, Aurora dahinter (18b)', type: 'Titel 22/600 Weiss · Satz 13 #94A3B8 · Meta Mono 11 #94A3B8', tap: '—' },
+        { el: 'Bezugszeile Trainingsangaben', h: '≥ 64 · r 16', surface: 'Karte #14141D · Rand #232334 · Kachel 36 #1A1A26', type: 'Label 12 #94A3B8 · Wert 14 Weiss (offen: #CDD3EA) · Herkunft Mono 11', tap: 'ganze Zeile · Chevron Cyan' },
+        { el: 'A/B-Umschalter', h: '48 + 2 × 4 Rahmen · r 16/12', surface: '#0B0B0E · gewählt Cyan 8 % + Rand 1,5 Cyan', type: '14/600 · darunter Mono 11 „DIESE WOCHE … IST A"', tap: 'je Segment ≥ 48 × 120' },
+        { el: 'Wochenkarte', h: 'r 20 · Kopf 12/14', surface: 'Karte #14141D, Rand #232334', type: 'Kopf Mono 11 #94A3B8', tap: '—' },
+        { el: 'Tagesabschnitt', h: 'Kopf ≥ 48 · Trenner 1 #232334 · Innen 14 links', surface: 'in der Karte, keine eigene Fläche', type: 'Tagesname 14/600 Weiss, ausgeschrieben · HEUTE Mono 10,5 mit Rand 1 #CDD3EA', tap: 'Plus 48 × 48 (sichtbar 32, Rand Cyan 45 %)' },
+        { el: 'Eintragszeile', h: '≥ 56 · r 14 · Abstand 8', surface: 'angehoben #1A1A26 · Rand #232334', type: 'Titel 14/600 · Meta 12 #94A3B8 · Notiz 12 #CDD3EA', tap: 'ganze Zeile · ⋯ Cyan als Zeichen' },
+        { el: 'Spurkachel', h: '36 × 36 · r 10 · Symbol 19', surface: 'Kraft Amber 14 % + #FFB020 · Cardio #7A2BDB + Weiss · Frei #0B0B0E + #CDD3EA', type: '—', tap: '—' },
+        { el: 'Tatsachenzeile', h: 'Punkt 6 · 8 über', surface: 'keine', type: '12 #94A3B8, beginnt mit „Trainiert ·"', tap: '— (kein Ziel)' },
+        { el: 'Bisher-Block', h: 'r 16 · 12/14', surface: 'Karte #14141D', type: 'Kopf Mono 11 · Zahl 13,5 Weiss · Bezug 12 #94A3B8', tap: '—' },
+        { el: 'Fusszeile', h: '22 oben · Linie 1', surface: '—', type: 'Mono 11 #94A3B8 · „Woche leeren" 13/600 #F02277', tap: '48 hoch' },
+        { el: 'Blatt', h: 'r 24 oben · max 86 % · 16 seitlich', surface: '#14141D · Scrim #050507 72 %, ohne Blur', type: 'Titel 17/600 · Satz 12,5 · Gruppen Mono 12', tap: 'Kachel ≥ 88 · Option ≥ 52 · Chip ≥ 48' },
+        { el: 'Hinzufügen / Übernehmen', h: '52 · r 14', surface: 'Cyan 10 % + Rand Cyan · unvollständig #1A1A26 + #94A3B8', type: '14/600', tap: 'volle Breite' },
+        { el: 'Snackbar', h: '≥ 52 · 12 vom Rand', surface: '#1A1A26 · Rand #232334', type: '13 #CDD3EA · Rückgängig 13/600 Cyan', tap: 'Rückgängig ≥ 48 hoch' },
+        { el: 'Widget', h: 'r 20 · 14 innen · Heute-Zeile ≥ 56', surface: 'Karte #14141D · Zeile #1A1A26', type: 'Kicker Mono 11 · Titel 14/600 · Meta 12 · Quelle Mono 11', tap: 'nur Fusszeile 52 · volle Breite' },
+        { el: 'Wochenstreifen', h: '7 Spalten · Zelle ≥ 36 · Pip 20 r 6', surface: 'heute #1A1A26 + Rand 1,5 #CDD3EA', type: 'Kürzel Mono 12 · heute Weiss 700', tap: 'nicht tippbar — ein Weg: Fusszeile' },
+        { el: 'Kalender-Symbol Hybrid-Kopf', h: '48 × 48 · Symbol 20', surface: '—', type: '—', tap: '48 × 48, steht immer' },
+        { el: '200 % · Seite', h: 'ab textScaler 1,45', surface: '—', type: 'Spurkachel 48 über dem Text · Tageskopf bricht um', tap: 'Plus 56' },
+        { el: '200 % · Widget', h: 'ab textScaler 1,45', surface: '—', type: 'Streifen → Wrap, Pips neben dem Kürzel', tap: 'Fusszeile 64' }
+      ],
+      motion: [
+        { el: 'Gedrückt', trig: 'Pointer down: Zeile, Plus, Chip, Kachel', prop: 'scale 0,97 + Cyan-Schein 18', dur: '200', curve: 'press', rest: 'scale 1', red: 'nur Schein' },
+        { el: 'Blatt auf', trig: 'Tipp Plus / Eintrag', prop: 'translateY 100 % → 0 · Scrim 0 → 72 %', dur: '320', curve: 'enter', rest: 'offen', red: 'sofort' },
+        { el: 'Blatt zu', trig: 'Scrim, Zurück, Auswahl', prop: 'translateY → 100 % · Scrim aus', dur: '240', curve: 'exit', rest: '—', red: 'sofort' },
+        { el: 'Eintrag entsteht', trig: 'Hinzufügen', prop: 'Höhe 0 → Zeile, Deckkraft, translateY −6 → 0; dann Scan', dur: '320 + 760', curve: 'enter / settle', rest: 'Zeile steht', red: 'steht, kein Scan' },
+        { el: 'Eintrag wandert · Blatt', trig: 'Tag-Chip', prop: 'FLIP: Ghost fliegt alt → neu; Ursprung zu 120 + 240, Ziel auf 320; Scan am Ziel', dur: '280–480', curve: 'settle', rest: 'am Zieltag', red: 'springt; Snackbar' },
+        { el: 'Ziel ausser Sicht', trig: 'wie oben', prop: 'kein Flug, kein Auto-Scroll; nur Ursprung schliesst', dur: '360', curve: 'exit', rest: '—', red: 'sofort' },
+        { el: 'Anheben', trig: 'lange drücken 400 ms', prop: 'scale 1,03 · Schatten 0 12 28 #000 60 % · Haptik leicht', dur: '160', curve: 'press', rest: 'folgt dem Finger', red: 'ohne scale' },
+        { el: 'Einfügelinie', trig: 'Ghost über einem Tag', prop: '2 dp Cyan gestrichelt am Tagesende, Deckkraft 0 → 1', dur: '120', curve: 'press', rest: 'bis Loslassen', red: 'steht' },
+        { el: 'Ablegen', trig: 'Loslassen über Tag', prop: 'scale → 1, setzt sich an den Platz; Scan', dur: '240 + 760', curve: 'settle', rest: 'am Zieltag', red: 'sofort' },
+        { el: 'Abbrechen', trig: 'Loslassen ausserhalb', prop: 'Ghost fliegt zurück', dur: '280', curve: 'settle', rest: 'Ursprung', red: 'sofort' },
+        { el: 'Ablehnung', trig: 'Server lehnt ab', prop: 'wie Abbrechen (Verschieben) bzw. Ausblenden + Blatt auf (Anlegen); Fehlerzeile flackert (18b)', dur: '280 / 320', curve: 'settle / ease-out', rest: 'Fehler bis nächstes Tippen', red: 'Rücksprung sofort' },
+        { el: 'Entfernen', trig: 'Eintrag entfernen', prop: 'Deckkraft, dann Höhe', dur: '120 + 240', curve: 'exit', rest: '—', red: 'sofort' },
+        { el: 'A/B wechseln', trig: 'Segment', prop: 'Segment-Schieber (18b) · Tage Querblende', dur: '240 · 200', curve: 'settle · press', rest: 'neue Woche', red: 'sofort' },
+        { el: 'Widget · Mitternacht', trig: '00:00, Tab sichtbar', prop: 'alt: Deckkraft 1 → 0, Y 0 → −8 · neu: Y 8 → 0 + Deckkraft (80 versetzt) · Heute-Rand gleitet', dur: '160 + 240 · 240', curve: 'exit / enter · settle', rest: 'neuer Tag', red: 'Austausch' },
+        { el: 'Widget · Resume', trig: 'App kommt nach 00:00 zurück', prop: 'keine — baut direkt neu', dur: '0', curve: '—', rest: 'neuer Tag', red: '—' },
+        { el: 'Skelett', trig: 'Laden > 300 ms', prop: 'Puls .55 ↔ 1 (18b)', dur: '1400 Loop', curve: 'easeInOut', rest: '—', red: 'steht bei .8' }
+      ],
+      strings: [
+        { key: 'week.place', de: 'HYBRID · WOCHE', en: 'HYBRID · WEEK' },
+        { key: 'week.title', de: 'Deine Woche', en: 'Your week' },
+        { key: 'week.sub', de: 'Was an welchem Wochentag üblich ist. Gilt jede Woche, bis du es änderst.', en: 'What usually happens on which weekday. Applies every week until you change it.' },
+        { key: 'week.sub_alternating', de: 'Zwei Wochen im Wechsel, wie in deinen Trainingsangaben.', en: 'Two alternating weeks, as in your training details.' },
+        { key: 'week.edited', de: 'ZULETZT GEÄNDERT · {date}', en: 'LAST CHANGED · {date}' },
+        { key: 'week.brief.label', de: 'Trainingsangaben', en: 'Training details' },
+        { key: 'week.brief.none', de: 'Nicht angegeben — freiwillig', en: 'Not given — optional' },
+        { key: 'week.brief.source', de: 'DEINE ANGABE VOM {date}', en: 'YOUR ANSWER FROM {date}' },
+        { key: 'week.brief.source_intended', de: 'VORGENOMMEN AM {date}', en: 'YOUR INTENTION FROM {date}' },
+        { key: 'week.head', de: 'GILT JEDE WOCHE', en: 'APPLIES EVERY WEEK' },
+        { key: 'week.head_ab', de: 'WOCHE {ab} · GILT JEDE ZWEITE WOCHE', en: 'WEEK {ab} · EVERY OTHER WEEK' },
+        { key: 'week.ab', de: 'Woche {ab}', en: 'Week {ab}' },
+        { key: 'week.ab.current', de: 'DIESE WOCHE (KW {kw}) IST WOCHE {ab}', en: 'THIS WEEK (CW {kw}) IS WEEK {ab}' },
+        { key: 'week.ab.inactive', de: 'Woche B bleibt gespeichert, gilt aber nicht, solange deine Angabe „jede Woche gleich" ist.', en: 'Week B stays saved but doesn’t apply while your answer is “same every week”.' },
+        { key: 'week.today', de: 'HEUTE', en: 'TODAY' },
+        { key: 'week.add.a11y', de: 'Eintrag am {day} hinzufügen', en: 'Add entry on {day}' },
+        { key: 'week.kind.strength / cardio / off', de: 'Kraft · Cardio · Frei', en: 'Strength · Cardio · Free' },
+        { key: 'week.strength.free', de: 'Krafttraining', en: 'Strength training' },
+        { key: 'week.strength.no_plan', de: 'ohne Plan', en: 'no plan' },
+        { key: 'week.strength.exercises', de: 'one: {n} Übung · other: {n} Übungen', en: 'one: {n} exercise · other: {n} exercises' },
+        { key: 'week.cardio.minutes', de: '{n} Min', en: '{n} min' },
+        { key: 'week.daypart.*', de: 'morgens · mittags · abends', en: 'morning · midday · evening' },
+        { key: 'week.off.meta', de: 'kein Training vorgesehen', en: 'no training intended' },
+        { key: 'week.plan_deleted', de: 'Plan „{name}" gelöscht — bleibt freies Krafttraining', en: 'Plan “{name}” deleted — stays as free strength training' },
+        { key: 'week.fact', de: 'Trainiert · {what}', en: 'Trained · {what}' },
+        { key: 'week.sum.head', de: 'DIESE WOCHE BISHER · KW {kw}', en: 'THIS WEEK SO FAR · CW {kw}' },
+        { key: 'week.sum.strength', de: 'one: {n} Kraft-Einheit · other: {n} Kraft-Einheiten', en: 'one: {n} strength session · other: {n} strength sessions' },
+        { key: 'week.sum.cardio', de: 'one: {n} Cardio-Einheit · other: {n} Cardio-Einheiten', en: 'one: {n} cardio session · other: {n} cardio sessions' },
+        { key: 'week.sum.planned', de: '· in deiner Woche {n}', en: '· in your week {n}' },
+        { key: 'week.used', de: 'GENUTZT VON · HYBRID (HEUTE) · KRAFT (TRAINIEREN)', en: 'USED BY · HYBRID (TODAY) · STRENGTH (TRAIN)' },
+        { key: 'week.clear', de: 'Woche leeren', en: 'Clear week' },
+        { key: 'week.clear.title', de: 'Ganze Woche leeren? · Woche {ab} leeren?', en: 'Clear the whole week? · Clear week {ab}?' },
+        { key: 'week.clear.count', de: 'one: {n} Eintrag an {d} Tag wird entfernt. · other: {n} Einträge an {d} Tagen werden entfernt.', en: 'one: {n} entry on {d} day will be removed. · other: {n} entries on {d} days will be removed.' },
+        { key: 'week.clear.plans', de: '{n} davon mit Plan. Deine Pläne selbst bleiben.', en: '{n} of them with a plan. Your plans themselves stay.' },
+        { key: 'week.clear.irreversible', de: 'Das lässt sich nicht rückgängig machen.', en: 'This can’t be undone.' },
+        { key: 'week.clear.confirm', de: 'Woche endgültig leeren', en: 'Clear week permanently' },
+        { key: 'common.cancel', de: 'Abbrechen', en: 'Cancel' },
+        { key: 'sheet.add.title', de: 'Eintrag am {day}', en: 'Entry on {day}' },
+        { key: 'sheet.edit.title', de: 'Eintrag am {day} ändern', en: 'Edit entry on {day}' },
+        { key: 'sheet.add.sub', de: 'Gilt jeden {day}.', en: 'Applies every {day}.' },
+        { key: 'sheet.group.*', de: 'Art · Plan · Aktivität · Dauer · optional · Tageszeit · optional', en: 'Type · Plan · Activity · Duration · optional · Time of day · optional' },
+        { key: 'sheet.plan.none', de: 'Ohne Plan — freies Krafttraining', en: 'No plan — free strength training' },
+        { key: 'sheet.off.disabled', de: 'nur an Tagen ohne Eintrag', en: 'only on days without entries' },
+        { key: 'sheet.add.confirm / edit.confirm', de: 'Hinzufügen · Übernehmen', en: 'Add · Apply' },
+        { key: 'sheet.move.label', de: 'Verschieben nach', en: 'Move to' },
+        { key: 'sheet.move.hint', de: 'Oder lange drücken und auf einen anderen Tag ziehen.', en: 'Or long-press and drag to another day.' },
+        { key: 'sheet.edit / remove', de: 'Ändern · Eintrag entfernen', en: 'Edit · Remove entry' },
+        { key: 'snack.added', de: '{title} am {day} eingetragen', en: '{title} added on {day}' },
+        { key: 'snack.added_replaced', de: '{title} am {day} eingetragen — „Frei" ersetzt', en: '{title} added on {day} — replaced “Free”' },
+        { key: 'snack.moved', de: '{title} auf {day} verschoben', en: '{title} moved to {day}' },
+        { key: 'snack.removed', de: '„{title}" am {day} entfernt', en: '“{title}” removed from {day}' },
+        { key: 'snack.cleared', de: 'Woche geleert', en: 'Week cleared' },
+        { key: 'snack.undo', de: 'Rückgängig', en: 'Undo' },
+        { key: 'err.load', de: 'Woche konnte nicht geladen werden.', en: 'Your week couldn’t be loaded.' },
+        { key: 'err.load.sub', de: 'Bis sie geladen ist, zeigt die Seite keine Tage — sonst sähe sie leer aus.', en: 'Until it loads, no days are shown — otherwise it would look empty.' },
+        { key: 'err.save.add', de: '„{title}" nicht gespeichert — der Server hat abgelehnt. {day} bleibt wie vorher.', en: '“{title}” not saved — the server declined. {day} stays as before.' },
+        { key: 'err.save.move', de: '„{title}" nicht auf {to} verschoben — der Server hat abgelehnt. Steht wieder am {from}.', en: '“{title}” not moved to {to} — the server declined. Back on {from}.' },
+        { key: 'err.retry', de: 'Erneut versuchen', en: 'Try again' },
+        { key: 'today.kicker', de: 'HEUTE · {weekday}', en: 'TODAY · {weekday}' },
+        { key: 'today.kicker_week', de: 'DEINE WOCHE', en: 'YOUR WEEK' },
+        { key: 'today.source.week', de: 'LAUT DEINER WOCHE', en: 'FROM YOUR WEEK' },
+        { key: 'today.source.appointment', de: 'TERMIN', en: 'APPOINTMENT' },
+        { key: 'today.fact', de: 'Heute schon erfasst · {what}', en: 'Already logged today · {what}' },
+        { key: 'today.link', de: 'Deine Woche', en: 'Your week' },
+        { key: 'today.err', de: 'Deine Woche wurde nicht geladen.', en: 'Your week wasn’t loaded.' },
+        { key: 'today.a11y', de: 'Heute, {weekday}: {entries}. Laut deiner Woche.', en: 'Today, {weekday}: {entries}. From your week.' },
+        { key: 'hybrid.week_button.a11y', de: 'Deine Woche öffnen', en: 'Open your week' },
+        { key: 'train.today_source (Board 17)', de: '{meta} · laut deiner Woche · {meta} · Termin', en: '{meta} · from your week · {meta} · appointment' },
+        { key: 'train.tile_plans (Board 17)', de: 'Pläne', en: 'Plans' },
+        { key: 'a11y.entry.move_to', de: 'Auf {day} verschieben', en: 'Move to {day}' },
+        { key: 'a11y.entry.earlier / later', de: 'Einen Tag früher · Einen Tag später', en: 'One day earlier · One day later' },
+        { key: 'a11y.drag.lifted', de: '{title} angehoben. Über {day}.', en: '{title} lifted. Over {day}.' },
+        { key: 'a11y.drag.dropped', de: 'Nach {day} verschoben', en: 'Moved to {day}' },
+        { key: 'a11y.drag.cancelled', de: 'Zurück auf {day}', en: 'Back on {day}' }
+      ],
+      a11y: [
+        { el: 'Zurück', label: '„Zurück zu Hybrid"', role: 'button', state: '—' },
+        { el: 'Titel', label: '„Deine Woche"', role: 'header', state: 'erster Fokus nach Push' },
+        { el: 'Bezugszeile', label: '„Trainingsangaben: Kraft 3 mal, Montag, Mittwoch, Freitag … Deine Angabe vom 14. September. Öffnen"', role: 'button', state: 'offen: „Trainingsangaben: nicht angegeben, freiwillig. Öffnen" — kein „fehlt"' },
+        { el: 'A/B-Umschalter', label: '„Woche A, diese Woche" · „Woche B"', role: 'radio · radiogroup „Welche Woche"', state: 'checked; nach Wechsel polite: „Woche B, 4 Einträge"' },
+        { el: 'Tagesabschnitt', label: '„Mittwoch, heute, 1 Eintrag" · „Dienstag, kein Eintrag"', role: 'header (Gruppe)', state: '„kein Eintrag" beschreibt den Plan, nicht einen Mangel' },
+        { el: 'Plus je Tag', label: '„Eintrag am Montag hinzufügen"', role: 'button', state: '—' },
+        { el: 'Eintragszeile', label: '„Oberkörper A, Kraft, 5 Übungen, abends. Montag."', role: 'button + customSemanticsActions', state: 'Doppeltippen öffnet das Blatt. Aktionen: „Auf Dienstag verschieben" … (die sechs anderen Tage), „Einen Tag früher", „Einen Tag später", „Ändern", „Entfernen". Jede Aktion schreibt direkt, ohne Blatt.' },
+        { el: 'Verschieben per Aktion', label: '—', role: 'liveRegion polite', state: '„Oberkörper A auf Dienstag verschoben. Rückgängig verfügbar." Fokus bleibt auf dem Eintrag, der jetzt unter Dienstag steht.' },
+        { el: 'Ziehen', label: '—', role: 'LongPressDraggable (Zusatz)', state: 'angehoben: „Oberkörper A angehoben. Über Mittwoch." · abgelegt: „Nach Mittwoch verschoben" · abgebrochen: „Zurück auf Montag". Nie der einzige Weg.' },
+        { el: 'Blatt', label: 'Titel, z. B. „Eintrag am Donnerstag"', role: 'dialog', state: 'Fokus auf Titel; Scrim und Zurück schliessen; Fokus kehrt zum auslösenden Plus / Eintrag zurück' },
+        { el: 'Art-Kacheln', label: '„Kraft" · „Cardio" · „Frei, nur an Tagen ohne Eintrag"', role: 'radio', state: 'checked · disabled mit Grund im Label' },
+        { el: 'Tag-Chips Verschieben', label: '„Mittwoch"', role: 'radio · radiogroup „Verschieben nach"', state: 'eigener Tag: checked + disabled, Label „Montag, aktueller Tag"' },
+        { el: 'Hinzufügen', label: '„Hinzufügen"', role: 'button', state: 'unvollständig: disabled, Hinweis „Aktivität wählen"' },
+        { el: 'Tatsachenzeile', label: '„Trainiert: Oberkörper A, 52 Minuten"', role: 'text', state: 'an die Tagesgruppe gehängt, nicht an den Eintrag' },
+        { el: 'Bisher-Block', label: '„Diese Woche bisher: 1 Kraft-Einheit, in deiner Woche 3. 1 Cardio-Einheit, in deiner Woche 3."', role: 'text', state: 'kein „von", kein „noch"' },
+        { el: 'Snackbar', label: 'Text + „Rückgängig"', role: 'liveRegion polite', state: '6 s; bei aktivem Screenreader bis zum nächsten Fokuswechsel' },
+        { el: 'Speicherfehler', label: 'Fehlertext', role: 'liveRegion assertive', state: 'Fokus auf „Erneut versuchen" (Verschieben) bzw. „Hinzufügen" (Anlegen)' },
+        { el: 'Woche leeren · Stufe 2', label: '„Ganze Woche leeren? 7 Einträge an 7 Tagen werden entfernt …"', role: 'dialog', state: 'Fokus auf „Abbrechen", nie auf dem roten Knopf' },
+        { el: 'Widget', label: '„Heute, Mittwoch: Unterkörper B. Laut deiner Woche."', role: 'container, ein Knoten', state: 'ohne Heute: „Deine Woche: Montag: Oberkörper A; …" — kein „nichts geplant"' },
+        { el: 'Wochenstreifen-Zelle', label: '„Donnerstag: Lauf" · „Sonntag: Frei" · „Dienstag: kein Eintrag"', role: 'text (im Container)', state: 'heute: „…, heute"' },
+        { el: 'Widget-Fusszeile · Kalender-Symbol', label: '„Deine Woche öffnen"', role: 'button', state: 'Tooltip „Woche"' },
+        { el: 'Mitternacht', label: '—', role: '—', state: 'keine Ansage; Inhalt aktualisiert still (kein liveRegion)' }
+      ],
+      reuse: [
+        { m: '18', c: '#AB6BF0', b: 'AtemAnswerTile', use: 'Art-Kacheln Kraft · Cardio · Frei im Blatt; gesperrt gestrichelt mit Grund' },
+        { m: '18', c: '#AB6BF0', b: 'AtemAnswerOption', use: 'Planwahl als Radio, mit Metazeile „5 Übungen"' },
+        { m: '18', c: '#AB6BF0', b: 'AtemAnswerChip', use: 'Aktivität, Dauer, Tageszeit, „Verschieben nach" — Wrap-Regel unverändert' },
+        { m: '18', c: '#AB6BF0', b: 'AtemAnswerRow', use: 'Bezugszeile Trainingsangaben, ohne Statuspunkt (hier Verweis, keine Frage)' },
+        { m: '18', c: '#AB6BF0', b: 'Spurtöne + Symbole', use: 'Spurkachel, Pips, Bisher-Block; Frei nimmt den neutralen Ton' },
+        { m: '18b', c: '#00F2FE', b: 'AtemMotion.* · Speicher-Scan · Segment-Schieber · Ablehnung', use: 'alle Bewegungen; neu nur flip und lift' },
+        { m: '17', c: '#FFB020', b: 'Startblock', use: 'Kopf liest todayPlan() gefiltert auf Kraft; Metazeile bekommt die Quelle' },
+        { m: '11', c: '#94A3B8', b: 'TodayWeekCard', use: 'ersetzt durch AtemTodayWidget; Regel „ohne Eintrag nur die Woche" übernommen' },
+        { m: '07', c: '#94A3B8', b: 'Zweistufiges Löschen · Snackbar 6 s', use: 'Woche leeren; Anlegen, Verschieben, Entfernen mit Rückgängig' },
+        { m: '05', c: '#94A3B8', b: 'Planliste', use: 'Quelle der Planwahl; gelöschter Plan → Schnappschuss-Name' },
+        { m: '13', c: '#94A3B8', b: 'Ortszeile', use: '„HYBRID · WOCHE"' },
+        { m: '02', c: '#94A3B8', b: 'Skelett · Fehlerkarte', use: 'Lade- und Fehlerzustände von Seite und Widget' },
+        { m: 'NEU', c: '#00FF87', b: 'AtemWeekDaySection', use: 'Tagesname + HEUTE + Plus, Einträge, Tatsachenzeile, Fehlerzeile' },
+        { m: 'NEU', c: '#00FF87', b: 'AtemPlanEntryRow', use: 'Seite (mit ⋯, Aktionen, Draggable) und Widget (ohne) — ein Baustein, zwei Modi' },
+        { m: 'NEU', c: '#00FF87', b: 'AtemEntrySheet', use: 'Anlegen · Ändern · Verschieben · Woche leeren' },
+        { m: 'NEU', c: '#00FF87', b: 'AtemTodayWidget + AtemWeekStrip', use: 'Hybrid-Tab; Streifen mit Wrap ab 1,45' },
+        { m: 'NEU', c: '#00FF87', b: 'todayPlan(date)', use: 'einzige Ableitung für Hybrid und Kraft' }
+      ],
+      decisions: this.decisions(),
+      prereq: [
+        { b: '20', t: 'Ein Vorschlag schreibt nie direkt in planning/week. Angenommen wird Eintrag für Eintrag; danach ist er ein gewöhnlicher Eintrag. Das Feld origin ist dafür reserviert und wird hier nie geschrieben.' },
+        { b: '20', t: 'Die Woche kennt kein „vorgeschlagen"-Aussehen. Wie ein Vorschlag neben einer bestehenden Woche erscheint, entscheidet Board 20 — hier steht nur, dass ein angenommener Eintrag nicht anders aussieht als ein selbst angelegter.' },
+        { b: '20', t: 'Die Bezugszeile ist der Anknüpfungspunkt. Board 20 darf sie erweitern (z. B. um einen Weg zum Vorschlag); dieses Board zeigt dort nur die Angabe.' },
+        { b: '18', t: 'Registerzeile „Genutzt von" lautet ab Auslieferung „Woche (Planung)". Wechselwochen-Anker (anchorWeekStart) wird hier gelesen.' },
+        { b: '17', t: 'Kachel „Training planen" heisst künftig „Pläne" — „planen" gehört der Woche. Der Startblock-Kopf liest todayPlan() und nennt die Quelle („laut deiner Woche" / „Termin").' },
+        { b: '11', t: 'TodayWeekCard wird durch AtemTodayWidget ersetzt; der Hybrid-Kopf bekommt das Kalender-Symbol als festen Einstieg. Einstellungen › Training bekommt die Zeile „Woche".' },
+        { b: '18b', t: 'Zwei neue Bewegungen in die Grammatik aufnehmen, falls noch nicht da: flip (Ortswechsel eines Elements in einer Liste) und lift (Anheben zum Ziehen).' },
+        { b: 'SCHEMA', t: 'Felder aus L gegen docs/contracts/04-firestore-schema.md abgleichen. Nicht verhandelbar: Map statt Array, keine Daten, keine Kopie von Briefing-Feldern, off exklusiv.' }
+      ],
+      bigDays: this.days(W.p1, { today: 3 }).slice(0, 3),
+      bigStrip: this.widget({ list: W.p1, today: 3 }).week
+    };
+  }
+}
+</script>
+</body>
+</html>

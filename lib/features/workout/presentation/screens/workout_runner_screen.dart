@@ -22,6 +22,7 @@ import '../widgets/rest_bar.dart';
 import '../set_type_ui.dart';
 import '../widgets/session_top_bar.dart';
 import '../widgets/set_effort.dart';
+import '../widgets/set_history_drop.dart';
 import '../widgets/set_row.dart';
 import '../workout_ui.dart';
 import '../../../../app/application/snackbar_providers.dart';
@@ -798,6 +799,13 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                             .copyWith(color: AtemColors.cyan)),
                   ],
                   const SizedBox(height: AtemSpacing.md),
+                  // Die früheren Sätze dieser Übung, auf Tipp (23.09.2026).
+                  SetHistoryDrop(
+                    key: ValueKey('history-${exercise.id}'),
+                    exerciseId: exercise.id,
+                    exerciseName: _displayName(exercise),
+                  ),
+                  const SizedBox(height: AtemSpacing.sm),
                   // Seitengetrennt nimmt jede Zeile das zweizeilige Layout
                   // (siehe [SetRow]) — dann trägt der Kopf keine Spalten.
                   if (!SetRow.isCompact(context) && !exercise.unilateral)

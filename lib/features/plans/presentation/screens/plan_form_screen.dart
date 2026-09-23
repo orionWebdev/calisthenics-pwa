@@ -511,7 +511,12 @@ class _ItemCardState extends State<_ItemCard> {
         ? l10n.planItemMissing
         : exerciseName(context, exercise);
 
-    return Container(
+    // Aufklappen mit der Lichtkante, bei jedem Öffnen (23.09.2026).
+    return AtemEdgeSweep(
+      trigger: _open,
+      when: _open,
+      radius: AtemRadii.card,
+      child: Container(
       decoration: BoxDecoration(
         color: AtemColors.card,
         borderRadius: BorderRadius.circular(AtemRadii.card),
@@ -718,6 +723,7 @@ class _ItemCardState extends State<_ItemCard> {
           ],
         ],
       ),
+    ),
     );
   }
 

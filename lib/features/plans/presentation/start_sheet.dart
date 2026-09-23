@@ -169,7 +169,12 @@ class _BodyState extends State<_Body> {
           Text(l10n.formReadinessHint,
               style: AtemType.labelSmall.of(context)),
           const SizedBox(height: 18),
-          AtemTappable(
+          // Aufklappen mit der Lichtkante, bei jedem Öffnen (23.09.2026).
+          AtemEdgeSweep(
+            trigger: _open,
+            when: _open,
+            radius: AtemRadii.statBox,
+            child: AtemTappable(
             onTap: () => setState(() => _open = !_open),
             semanticLabel: '${l10n.sheetRestLabel}, ${l10n.restSeconds(rest)}',
             child: AtemStatBox(
@@ -195,6 +200,7 @@ class _BodyState extends State<_Body> {
                 ],
               ),
             ),
+          ),
           ),
           if (_open) ...[
             const SizedBox(height: 10),

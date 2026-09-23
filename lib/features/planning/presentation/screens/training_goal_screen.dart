@@ -62,8 +62,8 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
   BriefingQuestion? _open;
 
   /// Je Frage: wie oft sie aufgeklappt wurde oder erschienen ist. Ändert
-  /// sich die Zahl, läuft die Lichtkante — einmal je Frage und Besuch, das
-  /// entscheidet der Scope (Board 18b, F3).
+  /// sich die Zahl, läuft die Lichtkante — bei jedem Öffnen (entschieden am
+  /// 23.09.2026, gegen Board 18b C6).
   final _edgeTicks = <BriefingQuestion, int>{};
 
   void _edge(BriefingQuestion q) => _edgeTicks[q] = (_edgeTicks[q] ?? 0) + 1;
@@ -275,7 +275,9 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
       trigger: activity.saved == q ? activity.tick : null,
       child: AtemEdgeSweep(
         trigger: _edgeTicks[q] ?? 0,
-        edgeKey: q,
+        // Der Block entsteht beim Aufklappen oder Erscheinen neu; beim
+        // Aufbau der Seite ist der Zähler 0 und nichts läuft.
+        onMount: (_edgeTicks[q] ?? 0) > 0,
         radius: AtemRadii.card,
         child: Container(
           padding: const EdgeInsets.all(16),

@@ -571,6 +571,8 @@ class AtemEdgeSweep extends StatefulWidget {
     this.edgeKey,
     this.delay = Duration.zero,
     this.when = true,
+    this.evenInFocus = false,
+    this.onMount = false,
   });
 
   final Object trigger;
@@ -579,6 +581,15 @@ class AtemEdgeSweep extends StatefulWidget {
   /// Läuft nur, wenn beim Wechsel von [trigger] auch das gilt — für
   /// Disclosures: `trigger: open, when: open`. Zuklappen hat keine Kante.
   final bool when;
+
+  /// Auch in der Stufe Fokus (Runner) — siehe [AtemReceipts.start].
+  final bool evenInFocus;
+
+  /// Läuft auch, wenn die Kante gerade erst eingebaut wird — für Blöcke,
+  /// die beim Öffnen neu entstehen (eine aufgeklappte Frage, eine
+  /// Erklärung). Nur setzen, wenn das Einbauen Folge einer Handlung ist,
+  /// nie beim Aufbau der Seite (Board 18b, F3).
+  final bool onMount;
   final double radius;
   final Duration delay;
   final Widget child;
@@ -596,17 +607,45 @@ class _AtemEdgeSweepState extends State<AtemEdgeSweep>
         });
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.onMount && widget.when) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _start();
+      });
+    }
+  }
+
+  @override
   void didUpdateWidget(AtemEdgeSweep old) {
     super.didUpdateWidget(old);
     if (old.trigger == widget.trigger || !widget.when) return;
+    _inUpdate = true;
+    _start();
+    _inUpdate = false;
+  }
+
+  void _start() {
     final receipts = AtemReceiptScope.of(context);
-    final touch = receipts.start(AtemReceipt.edge, key: widget.edgeKey);
+    final touch = receipts.start(AtemReceipt.edge,
+        key: widget.edgeKey, evenInFocus: widget.evenInFocus);
     if (touch == null) return;
     listenForNewerTouch(receipts, touch);
+    // Ohne Verzögerung sofort: `build` folgt ohnehin, und ein Timer mit
+    // null Dauer liefe erst nach dem nächsten Bild an.
+    if (widget.delay == Duration.zero) {
+      _c.forward(from: 0);
+      if (!_inUpdate) setState(() {});
+      return;
+    }
     Future<void>.delayed(widget.delay, () {
       if (mounted) setState(() => _c.forward(from: 0));
     });
   }
+
+  /// Gesetzt, solange [didUpdateWidget] läuft — dort folgt `build` von
+  /// selbst, ein `setState` wäre überflüssig.
+  bool _inUpdate = false;
 
   @override
   void onNewerTouch() {
@@ -717,6 +756,10 @@ class _AtemSaveScanState extends State<AtemSaveScan>
     final touch = receipts.start(AtemReceipt.scan);
     if (touch == null) return;
     listenForNewerTouch(receipts, touch);
+    if (delay == Duration.zero) {
+      _c.forward(from: 0);
+      return;
+    }
     Future<void>.delayed(delay, () {
       if (mounted) _c.forward(from: 0);
     });

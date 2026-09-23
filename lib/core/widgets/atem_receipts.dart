@@ -56,8 +56,13 @@ class AtemReceipts {
   /// Meldet eine Quittung an. Rückgabe: die Nummer ihrer Berührung — oder
   /// `null`, wenn sie nicht leuchten darf. [key] macht eine Kante einmalig je
   /// Gegenstand und Besuch; eine zweite wird verworfen, nicht vertagt.
-  int? start(AtemReceipt kind, {Object? key}) {
-    if (!lit) return null;
+  ///
+  /// [evenInFocus] lässt eine Quittung auch in der Stufe Fokus zu — nur,
+  /// wo eine Entscheidung das ausdrücklich will (die Satzhistorie im Runner,
+  /// 23.09.2026). Bei „Animationen reduzieren" bleibt es trotzdem still.
+  int? start(AtemReceipt kind, {Object? key, bool evenInFocus = false}) {
+    final allowed = lit || (evenInFocus && stage == AtemReceiptStage.focus);
+    if (!allowed) return null;
     final now = _clock();
     final last = _lastOf[kind];
     _lastOf[kind] = now;
