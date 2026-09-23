@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../theme/theme.dart';
 import 'atem_glyph.dart';
+import 'atem_receipts.dart';
 
 /// Bausteine für Fragen, die jemand über sich beantwortet (Board 18).
 ///
@@ -22,21 +23,9 @@ import 'atem_glyph.dart';
 /// pulsiert, nichts leuchtet an einer offenen Frage: Ein leuchtender offener
 /// Block wäre eine Erinnerung (Entscheidung 24, 26).
 
-// --- Bewegung aus Board 18, F ------------------------------------------------
-
-/// Öffnen, Bloom, Scan, Snackbar: schneller Start, weiches Auslaufen.
-const Curve atemAnswerEase = Cubic(0.22, 1, 0.36, 1);
-
-/// Die Lichtkante: gleichmässig anlaufen, langsam auslaufen.
-const Curve _sweepEase = Cubic(0.45, 0, 0.2, 1);
-
-/// Das Häkchen zieht sich.
-const Curve _drawEase = Cubic(0.65, 0, 0.35, 1);
-
-const _bloomDuration = Duration(milliseconds: 620);
-const _coreDuration = Duration(milliseconds: 220);
-const _checkPop = Duration(milliseconds: 380);
-const _checkDraw = Duration(milliseconds: 360);
+/// Öffnen, Bloom, Scan: schneller Start, weiches Auslaufen. Seit Board 18b
+/// ein Token ([AtemMotion.settle]); der Name bleibt für die Aufrufer.
+const Curve atemAnswerEase = AtemMotion.settle;
 
 /// Wahl: Einfachauswahl als Zeile mit Ring und Kern.
 ///
@@ -70,8 +59,8 @@ class AtemAnswerOption extends StatelessWidget {
       exclusive: true,
       onTap: onTap,
       radius: AtemRadii.statBox,
-      child: _Bloom(
-        selected: selected,
+      child: AtemSelectBloom(
+        active: selected,
         radius: AtemRadii.statBox,
         child: _SelectionSurface(
           selected: selected,
@@ -130,11 +119,11 @@ class AtemAnswerChip extends StatelessWidget {
       exclusive: exclusive,
       onTap: onTap,
       radius: AtemRadii.statBox,
-      child: _CheckCorner(
+      child: AtemCheckCorner(
         selected: selected,
         size: 16,
-        child: _Bloom(
-          selected: selected,
+        child: AtemSelectBloom(
+          active: selected,
           radius: AtemRadii.statBox,
           child: _SelectionSurface(
             selected: selected,
@@ -203,11 +192,11 @@ class AtemAnswerTile extends StatelessWidget {
       exclusive: false,
       onTap: onTap,
       radius: AtemRadii.statBox,
-      child: _CheckCorner(
+      child: AtemCheckCorner(
         selected: selected,
         size: 18,
-        child: _Bloom(
-          selected: selected,
+        child: AtemSelectBloom(
+          active: selected,
           radius: AtemRadii.statBox,
           child: _SelectionSurface(
             selected: selected,
@@ -561,22 +550,29 @@ class _AtemRevealGroupState extends State<AtemRevealGroup>
   }
 }
 
-/// Die Lichtkante: ein Bogen Cyan → Hybrid-Ton läuft einmal um einen Block,
-/// der gerade erscheint oder aufklappt. Danach steht der Standardrand.
+/// Die Lichtkante: ein Bogen Cyan → Violett läuft einmal um einen Block —
+/// „neu, und von dir ausgelöst" (Board 18b, Verb ERSCHEINEN).
 ///
-/// **Keine Gradient-Karte** (Entscheidung 25): Sie markiert einen Moment,
-/// keinen Rang, und ist nach 1,2 s weg. Jede Änderung von [trigger] startet
-/// den Lauf neu; [delay] versetzt ihn in der Eintrittskaskade.
+/// **Nur als Folge einer eigenen Handlung** (Board 18b, F3): Sie läuft, wenn
+/// sich [trigger] ändert, nie beim Aufbau der Seite — beim Aufbau ist nichts
+/// neu, dafür gibt es die Kaskade. Mit [edgeKey] läuft sie je Gegenstand
+/// **einmal je Besuch**; das zweite Öffnen derselben Disclosure ist nicht neu.
+///
+/// **Keine Gradient-Karte** (Board 18, Entscheidung 25): Sie markiert einen
+/// Moment, keinen Rang, und ist nach 1,2 s weg. Der Schweif ist Violett —
+/// Fläche, kein Ort —, damit sie in jedem Bereich gleich aussieht (G2).
 class AtemEdgeSweep extends StatefulWidget {
   const AtemEdgeSweep({
     super.key,
     required this.trigger,
     required this.radius,
     required this.child,
+    this.edgeKey,
     this.delay = Duration.zero,
   });
 
   final Object trigger;
+  final Object? edgeKey;
   final double radius;
   final Duration delay;
   final Widget child;
@@ -586,32 +582,29 @@ class AtemEdgeSweep extends StatefulWidget {
 }
 
 class _AtemEdgeSweepState extends State<AtemEdgeSweep>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1200),
-  );
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_c.status == AnimationStatus.dismissed && !_started) _run();
-  }
-
-  bool _started = false;
-
-  void _run() {
-    _started = true;
-    if (AtemMotion.reduced(context)) return;
-    Future<void>.delayed(widget.delay, () {
-      if (mounted) _c.forward(from: 0);
-    });
-  }
+    with SingleTickerProviderStateMixin, AtemReceiptListener {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: AtemMotion.dEdge)
+        ..addStatusListener((s) {
+          if (s == AnimationStatus.completed) setState(() {});
+        });
 
   @override
   void didUpdateWidget(AtemEdgeSweep old) {
     super.didUpdateWidget(old);
-    if (old.trigger != widget.trigger) _run();
+    if (old.trigger == widget.trigger) return;
+    final receipts = AtemReceiptScope.of(context);
+    final touch = receipts.start(AtemReceipt.edge, key: widget.edgeKey);
+    if (touch == null) return;
+    listenForNewerTouch(receipts, touch);
+    Future<void>.delayed(widget.delay, () {
+      if (mounted) setState(() => _c.forward(from: 0));
+    });
+  }
+
+  @override
+  void onNewerTouch() {
+    if (_c.isAnimating) _c.value = 1;
   }
 
   @override
@@ -622,15 +615,16 @@ class _AtemEdgeSweepState extends State<AtemEdgeSweep>
 
   @override
   Widget build(BuildContext context) {
+    // Nur im Baum, solange sie läuft (Board 18b, K).
+    if (!_c.isAnimating) return widget.child;
     return AnimatedBuilder(
       animation: _c,
       child: widget.child,
       builder: (context, child) {
         final t = _c.value;
-        if (t == 0 || t == 1) return child!;
         return CustomPaint(
           foregroundPainter: _SweepPainter(
-            progress: _sweepEase.transform(t),
+            progress: AtemMotion.travel.transform(t),
             opacity: t < 0.12 ? t / 0.12 : (t > 0.8 ? (1 - t) / 0.2 : 1),
             radius: widget.radius,
           ),
@@ -668,8 +662,8 @@ class _SweepPainter extends CustomPainter {
           clear,
           clear,
           AtemColors.cyan.withValues(alpha: opacity),
-          AtemColors.tabHybrid.withValues(alpha: opacity),
-          AtemColors.tabHybrid.withValues(alpha: 0),
+          AtemColors.violet.withValues(alpha: opacity),
+          AtemColors.violet.withValues(alpha: 0),
         ],
         stops: const [0, 230 / 360, 292 / 360, 332 / 360, 1],
         transform: GradientRotation(progress * 2 * math.pi),
@@ -702,20 +696,29 @@ class AtemSaveScan extends StatefulWidget {
 }
 
 class _AtemSaveScanState extends State<AtemSaveScan>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 760),
-  );
+    with SingleTickerProviderStateMixin, AtemReceiptListener {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: AtemMotion.dScan);
 
   @override
   void didUpdateWidget(AtemSaveScan old) {
     super.didUpdateWidget(old);
-    if (widget.trigger != null &&
-        old.trigger != widget.trigger &&
-        !AtemMotion.reduced(context)) {
-      _c.forward(from: 0);
-    }
+    if (widget.trigger == null || old.trigger == widget.trigger) return;
+    final receipts = AtemReceiptScope.of(context);
+    // Blüht gerade ein Bloom derselben Handlung, kommt der Scan 280 ms
+    // später — zwei Aussagen an zwei Orten, nacheinander.
+    final delay = receipts.scanDelay();
+    final touch = receipts.start(AtemReceipt.scan);
+    if (touch == null) return;
+    listenForNewerTouch(receipts, touch);
+    Future<void>.delayed(delay, () {
+      if (mounted) _c.forward(from: 0);
+    });
+  }
+
+  @override
+  void onNewerTouch() {
+    if (_c.isAnimating) _c.value = 1;
   }
 
   @override
@@ -875,8 +878,8 @@ class _RadioMark extends StatelessWidget {
       alignment: Alignment.center,
       child: AnimatedScale(
         scale: selected ? 1 : 0,
-        duration: AtemMotion.duration(context, _coreDuration),
-        curve: Curves.easeOutBack,
+        duration: AtemMotion.duration(context, AtemMotion.dKern),
+        curve: AtemMotion.pop,
         child: Container(
           width: 10,
           height: 10,
@@ -898,8 +901,9 @@ class _RadioMark extends StatelessWidget {
 
 /// Das Häkchen an der Ecke: Es poppt und zieht sich dann als Strich. Es ist
 /// der Nicht-Farb-Träger von „gewählt" und darf deshalb auftreten.
-class _CheckCorner extends StatelessWidget {
-  const _CheckCorner({
+class AtemCheckCorner extends StatelessWidget {
+  const AtemCheckCorner({
+    super.key,
     required this.selected,
     required this.size,
     required this.child,
@@ -925,8 +929,11 @@ class _CheckCorner extends StatelessWidget {
           child: IgnorePointer(
             child: AnimatedScale(
               scale: selected ? 1 : 0,
-              duration: reduced ? Duration.zero : _checkPop,
-              curve: Curves.easeOutBack,
+              // Ein: poppen. Aus: in 160 ms schrumpfen, ohne Licht.
+              duration: reduced
+                  ? Duration.zero
+                  : (selected ? AtemMotion.dCorner : AtemMotion.dOff),
+              curve: selected ? AtemMotion.pop : AtemMotion.exit,
               child: Container(
                 width: size,
                 height: size,
@@ -944,8 +951,8 @@ class _CheckCorner extends StatelessWidget {
                 child: TweenAnimationBuilder<double>(
                   key: ValueKey(selected),
                   tween: Tween(begin: selected && !reduced ? 0 : 1, end: 1),
-                  duration: reduced ? Duration.zero : _checkDraw,
-                  curve: const Interval(0.25, 1, curve: _drawEase),
+                  duration: reduced ? Duration.zero : AtemMotion.dCheckStroke,
+                  curve: const Interval(0.25, 1, curve: AtemMotion.draw),
                   builder: (context, t, _) => CustomPaint(
                     size: Size.square(size * 0.62),
                     painter: _CheckPainter(t),
@@ -995,33 +1002,60 @@ class _CheckPainter extends CustomPainter {
   bool shouldRepaint(_CheckPainter old) => old.progress != progress;
 }
 
-/// Der Auswahl-Bloom: Cyan-Schein blüht aus der gewählten Fläche und löst
-/// sich auf. Nur beim Wechsel auf „gewählt", nie im Ruhezustand.
-class _Bloom extends StatefulWidget {
-  const _Bloom({
-    required this.selected,
+/// Der Auswahl-Bloom: Schein blüht aus der gewählten Fläche und löst sich
+/// auf — „das hält die App jetzt fest" (Board 18b, Verb WÄHLEN).
+///
+/// Nur beim Wechsel auf [active], nie im Ruhezustand, nie beim Laden eines
+/// gespeicherten Werts (der kommt schon aktiv an). Ob er tatsächlich blüht,
+/// entscheidet der [AtemReceiptScope]: nicht im Runner, nicht bei
+/// „Animationen reduzieren", und binnen 700 ms nach dem letzten Bloom nur
+/// still. Eine jüngere Berührung setzt ihn hart in die Ruhelage.
+///
+/// [color] ist Cyan („gewählt"); Magenta nur am Haupt-CTA, wo der Druck eine
+/// Session beginnt (Board 18b, C9).
+class AtemSelectBloom extends StatefulWidget {
+  const AtemSelectBloom({
+    super.key,
+    required this.active,
     required this.radius,
     required this.child,
+    this.color = AtemColors.cyan,
+    this.duration = AtemMotion.dBloom,
   });
 
-  final bool selected;
+  final bool active;
   final double radius;
+  final Color color;
+  final Duration duration;
   final Widget child;
 
   @override
-  State<_Bloom> createState() => _BloomState();
+  State<AtemSelectBloom> createState() => _AtemSelectBloomState();
 }
 
-class _BloomState extends State<_Bloom> with SingleTickerProviderStateMixin {
+class _AtemSelectBloomState extends State<AtemSelectBloom>
+    with SingleTickerProviderStateMixin, AtemReceiptListener {
   late final AnimationController _c =
-      AnimationController(vsync: this, duration: _bloomDuration);
+      AnimationController(vsync: this, duration: widget.duration)
+        ..addStatusListener((s) {
+          if (s == AnimationStatus.completed) setState(() {});
+        });
 
   @override
-  void didUpdateWidget(_Bloom old) {
+  void didUpdateWidget(AtemSelectBloom old) {
     super.didUpdateWidget(old);
-    if (!old.selected && widget.selected && !AtemMotion.reduced(context)) {
+    if (!old.active && widget.active) {
+      final receipts = AtemReceiptScope.of(context);
+      final touch = receipts.start(AtemReceipt.bloom);
+      if (touch == null) return;
+      listenForNewerTouch(receipts, touch);
       _c.forward(from: 0);
     }
+  }
+
+  @override
+  void onNewerTouch() {
+    if (_c.isAnimating) _c.value = 1;
   }
 
   @override
@@ -1032,13 +1066,14 @@ class _BloomState extends State<_Bloom> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // In Ruhelage nicht im Baum: kein Builder, keine Schicht (Board 18b, K).
+    if (!_c.isAnimating) return widget.child;
     return AnimatedBuilder(
       animation: _c,
       child: widget.child,
       builder: (context, child) {
         final raw = _c.value;
-        if (raw == 0 || raw == 1) return child!;
-        final t = atemAnswerEase.transform(raw);
+        final t = AtemMotion.settle.transform(raw);
         // Bis 35 % wächst der Schein, danach klingt er aus.
         final glow = raw < 0.35 ? raw / 0.35 : (1 - raw) / 0.65;
         return DecoratedBox(
@@ -1046,11 +1081,11 @@ class _BloomState extends State<_Bloom> with SingleTickerProviderStateMixin {
             borderRadius: BorderRadius.circular(widget.radius),
             boxShadow: [
               BoxShadow(
-                color: AtemColors.cyan.withValues(alpha: 0.6 * (1 - t)),
+                color: widget.color.withValues(alpha: 0.6 * (1 - t)),
                 spreadRadius: 10 * t,
               ),
               BoxShadow(
-                color: AtemColors.cyan.withValues(alpha: 0.38 * glow),
+                color: widget.color.withValues(alpha: 0.38 * glow),
                 blurRadius: 28,
                 spreadRadius: 4 * glow,
               ),
@@ -1137,4 +1172,66 @@ class _AnswerPressState extends State<_AnswerPress> {
       ),
     );
   }
+}
+
+/// Das Ablehnungs-Flackern: „nicht angekommen" (Board 18b, Verb ABLEHNEN).
+///
+/// Deckkraft 1 → 0,35 → 1 → 0,6 → 1 in 320 ms, jedes Mal, wenn sich
+/// [trigger] ändert. **Von jedem Lichtbudget ausgenommen** und nie gedämpft
+/// (Lichtbudget 05) — nur „Animationen reduzieren" hält es an; dann tragen
+/// Glyph, Satz und Rücksprung die Aussage.
+class AtemRejectFlicker extends StatefulWidget {
+  const AtemRejectFlicker({
+    super.key,
+    required this.trigger,
+    required this.child,
+  });
+
+  final Object trigger;
+  final Widget child;
+
+  @override
+  State<AtemRejectFlicker> createState() => _AtemRejectFlickerState();
+}
+
+class _AtemRejectFlickerState extends State<AtemRejectFlicker>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: AtemMotion.dFlicker);
+
+  static final _opacity = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween(begin: 1, end: 0.35), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 0.35, end: 1), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 1, end: 0.6), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 0.6, end: 1), weight: 1),
+  ]);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _run();
+  }
+
+  @override
+  void didUpdateWidget(AtemRejectFlicker old) {
+    super.didUpdateWidget(old);
+    if (old.trigger != widget.trigger) _run();
+  }
+
+  void _run() {
+    if (AtemMotion.reduced(context) || _c.isAnimating) return;
+    _c.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+        opacity: _opacity.animate(CurvedAnimation(parent: _c, curve: Curves.easeOut)),
+        child: widget.child,
+      );
 }

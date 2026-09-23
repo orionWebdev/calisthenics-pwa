@@ -1,6 +1,3 @@
-import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,8 +61,12 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
   /// Im Wiederansehen: der eine aufgeklappte Block.
   BriefingQuestion? _open;
 
-  /// Zählt das Aufklappen, damit die Lichtkante jedes Mal läuft.
-  int _openCount = 0;
+  /// Je Frage: wie oft sie aufgeklappt wurde oder erschienen ist. Ändert
+  /// sich die Zahl, läuft die Lichtkante — einmal je Frage und Besuch, das
+  /// entscheidet der Scope (Board 18b, F3).
+  final _edgeTicks = <BriefingQuestion, int>{};
+
+  void _edge(BriefingQuestion q) => _edgeTicks[q] = (_edgeTicks[q] ?? 0) + 1;
 
   DateTime get _today => widget.today ?? DateTime.now();
 
@@ -86,6 +87,7 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
       if (before == null || after == null) return;
       for (final q in BriefingQuestion.values) {
         if (!q.isAsked(before) && q.isAsked(after)) {
+          setState(() => _edge(q));
           _announce(l10n.briefingNewQuestionA11y(words.title(q)));
         }
       }
@@ -115,18 +117,34 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
         slivers: [
           SliverPersistentHeader(
             pinned: true,
-            delegate: _GlassHeader(
-              top: MediaQuery.paddingOf(context).top,
-              height: _GlassHeader.heightFor(context, l10n.briefingArea),
+            delegate: AtemSubpageBar.of(
+              context,
+              kicker: l10n.briefingArea,
               backLabel: l10n.commonBack,
-              area: l10n.briefingArea,
+              tone: AtemColors.tabHybrid,
             ),
           ),
           SliverToBoxAdapter(
-            child: _TitleBlock(
-              lastChanged: goal?.updatedAt == null || !goal!.hasAny
-                  ? null
-                  : l10n.briefingLastChanged(words.date(goal.updatedAt!)),
+            child: AtemSubpageTitle(
+              tone: AtemColors.tabHybrid,
+              title: AtemExplainHeader(
+                title: l10n.briefingTitle,
+                explanation: [l10n.briefingExplainBody],
+                titleStyle: AtemType.titleLarge
+                    .of(context)
+                    .copyWith(fontSize: 22, height: 1.25),
+              ),
+              below: [
+                const SizedBox(height: 2),
+                Text(l10n.briefingHint, style: AtemType.meta.of(context)),
+                if (goal?.updatedAt != null && goal!.hasAny) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.briefingLastChanged(words.date(goal.updatedAt!)),
+                    style: AtemType.meta.of(context),
+                  ),
+                ],
+              ],
             ),
           ),
           if (async.hasError)
@@ -200,8 +218,7 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
     if (first) {
       return AtemEntrance(
         index: index,
-        child: _block(context, words, goal, activity, q,
-            review: false, sweepDelay: Duration(milliseconds: index * 70 + 120)),
+        child: _block(context, words, goal, activity, q, review: false),
       );
     }
     final isOpen = _open == q;
@@ -235,7 +252,7 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
           : l10n.briefingRowA11yAnswered(short, answer),
       onTap: () => setState(() {
         _open = q;
-        _openCount++;
+        _edge(q);
         _ctrl.dismissError();
       }),
     );
@@ -248,7 +265,6 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
     BriefingActivity activity,
     BriefingQuestion q, {
     required bool review,
-    Duration sweepDelay = Duration.zero,
   }) {
     final l10n = words.l10n;
     final error = activity.error?.question == q ? activity.error : null;
@@ -258,8 +274,8 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
     return AtemSaveScan(
       trigger: activity.saved == q ? activity.tick : null,
       child: AtemEdgeSweep(
-        trigger: review ? _openCount : 0,
-        delay: sweepDelay,
+        trigger: _edgeTicks[q] ?? 0,
+        edgeKey: q,
         radius: AtemRadii.card,
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -698,276 +714,6 @@ Set<T>? _toggle<T>(Set<T>? set, T value) {
   return next.isEmpty ? null : next;
 }
 
-// --- Kopf ------------------------------------------------------------------
-
-/// Die Kopfleiste: Zurück und der Ort. Der einzige `BackdropFilter` der
-/// Seite — die Aurora hinter dem Titel wird von ihm mitgeblurrt, wenn sie
-/// darunter wegscrollt (Entscheidung 25).
-///
-/// **Sie wächst mit der Schrift, statt abzuschneiden.** 56 dp ist die
-/// Grundhöhe; bei 200 % auf 320 dp bricht „HYBRID · EINSTELLUNGEN" in zwei
-/// Zeilen, und die Leiste wird so hoch, wie der Ort es braucht. Ein
-/// abgeschnittener Ort wäre keine Ortsangabe mehr.
-class _GlassHeader extends SliverPersistentHeaderDelegate {
-  _GlassHeader({
-    required this.top,
-    required this.height,
-    required this.backLabel,
-    required this.area,
-  });
-
-  final double top;
-  final double height;
-  final String backLabel;
-  final String area;
-
-  static const _base = 56.0;
-
-  /// Links 4 + Zurück 48 + 4 + Punkt 6 + 8, rechts 16.
-  static const _reserved = 4 + 48 + 4 + 6 + 8 + 16.0;
-
-  static double heightFor(BuildContext context, String area) {
-    final tp = TextPainter(
-      text: TextSpan(
-        text: area,
-        style: AtemType.labelMicro.of(context),
-      ),
-      textDirection: Directionality.of(context),
-      textScaler: MediaQuery.textScalerOf(context),
-    )..layout(maxWidth: MediaQuery.sizeOf(context).width - _reserved);
-    final needed = tp.height + 24;
-    tp.dispose();
-    return math.max(_base, needed);
-  }
-
-  @override
-  double get minExtent => top + height;
-  @override
-  double get maxExtent => top + height;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlaps) {
-    // Die Leiste füllt ihre Ausdehnung ganz — sonst beansprucht der Kopf im
-    // Scroller mehr Höhe, als er malt, und die Sliver-Geometrie ist ungültig.
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-        child: Container(
-          height: maxExtent,
-          padding: EdgeInsets.only(top: top, left: 4, right: 16),
-          decoration: BoxDecoration(
-            color: AtemColors.base.withValues(alpha: 0.82),
-            border: const Border(bottom: BorderSide(color: AtemColors.border)),
-          ),
-          child: Row(
-            children: [
-              AtemTappable(
-                semanticLabel: backLabel,
-                onTap: () => Navigator.of(context).maybePop(),
-                child: const SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Center(
-                    child: AtemGlyph('M15 5l-7 7 7 7',
-                        color: AtemColors.cyan, size: 20, strokeWidth: 2),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
-              ExcludeSemantics(
-                child: Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AtemColors.tabHybrid,
-                    boxShadow: AtemGlow.dot(AtemColors.tabHybrid),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  area,
-                  style: AtemType.labelMicro
-                      .of(context)
-                      .copyWith(color: AtemColors.tabHybrid),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  bool shouldRebuild(_GlassHeader old) =>
-      old.top != top ||
-      old.height != height ||
-      old.backLabel != backLabel ||
-      old.area != area;
-}
-
-/// Titel mit ⓘ, Hinweiszeile, „Zuletzt geändert" — und dahinter die Aurora,
-/// die einzige Dauerschleife der Seite. Sie trägt den Ort (Hybrid) und steht
-/// bei „Animationen reduzieren" still.
-class _TitleBlock extends StatefulWidget {
-  const _TitleBlock({required this.lastChanged});
-
-  final String? lastChanged;
-
-  @override
-  State<_TitleBlock> createState() => _TitleBlockState();
-}
-
-class _TitleBlockState extends State<_TitleBlock>
-    with TickerProviderStateMixin {
-  late final AnimationController _aurora = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 16),
-  );
-  late final AnimationController _shine = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1400),
-  );
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    AtemMotion.syncLoop(context, _aurora, restingValue: 0.25);
-    if (!AtemMotion.reduced(context) && _shine.isDismissed) _shine.forward();
-  }
-
-  @override
-  void dispose() {
-    _aurora.dispose();
-    _shine.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
-          left: -50,
-          right: -50,
-          top: -64,
-          height: 200,
-          child: IgnorePointer(
-            child: ExcludeSemantics(
-              child: AnimatedBuilder(
-                animation: _aurora,
-                builder: (context, _) =>
-                    CustomPaint(painter: _AuroraPainter(_aurora.value)),
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Semantics(
-                header: true,
-                child: AnimatedBuilder(
-                  animation: _shine,
-                  builder: (context, child) => ShaderMask(
-                    blendMode: BlendMode.srcATop,
-                    shaderCallback: (rect) => _shineShader(rect, _shine.value),
-                    child: child,
-                  ),
-                  child: AtemExplainHeader(
-                    title: l10n.briefingTitle,
-                    explanation: [l10n.briefingExplainBody],
-                    titleStyle: AtemType.titleLarge
-                        .of(context)
-                        .copyWith(fontSize: 22, height: 1.25),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(l10n.briefingHint, style: AtemType.meta.of(context)),
-              if (widget.lastChanged != null) ...[
-                const SizedBox(height: 4),
-                Text(widget.lastChanged!, style: AtemType.meta.of(context)),
-              ],
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Ein Band Hybrid-Ton → Cyan wandert einmal durch das Wort und endet in
-  /// Weiss. Ausserhalb des Bands ist der Verlauf durchsichtig und lässt die
-  /// Schrift, wie sie ist.
-  static Shader _shineShader(Rect rect, double t) {
-    if (t == 0 || t == 1) {
-      return const LinearGradient(
-              colors: [Color(0x00FFFFFF), Color(0x00FFFFFF)])
-          .createShader(rect);
-    }
-    final p = const Cubic(0.45, 0, 0.2, 1).transform(t);
-    final c = -0.2 + p * 1.4;
-    return LinearGradient(
-      colors: const [
-        Color(0x00FFFFFF),
-        AtemColors.tabHybrid,
-        AtemColors.cyan,
-        Color(0x00FFFFFF),
-      ],
-      stops: [
-        (c - 0.12).clamp(0, 1),
-        (c - 0.03).clamp(0, 1),
-        (c + 0.03).clamp(0, 1),
-        (c + 0.12).clamp(0, 1),
-      ],
-    ).createShader(rect);
-  }
-}
-
-class _AuroraPainter extends CustomPainter {
-  _AuroraPainter(this.t);
-
-  final double t;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final a = t * 2 * math.pi;
-    void blob(Offset center, Size r, Color c) {
-      final rect = Rect.fromCenter(
-          center: center, width: r.width * 2, height: r.height * 2);
-      canvas.drawOval(
-        rect,
-        Paint()
-          ..shader = RadialGradient(
-            colors: [c, c.withValues(alpha: 0)],
-            stops: const [0, 0.7],
-          ).createShader(rect),
-      );
-    }
-
-    final w = size.width, h = size.height;
-    blob(Offset(w * (0.22 + 0.05 * math.sin(a)), h * (0.58 + 0.06 * math.cos(a))),
-        const Size(110, 70), AtemColors.cyan.withValues(alpha: 0.20));
-    blob(
-        Offset(w * (0.78 - 0.05 * math.sin(a + 1)),
-            h * (0.42 + 0.06 * math.sin(a))),
-        const Size(150, 80),
-        AtemColors.tabHybrid.withValues(alpha: 0.22));
-    blob(Offset(w * (0.5 + 0.06 * math.cos(a + 2)), h * 0.88),
-        const Size(140, 70), AtemColors.violet.withValues(alpha: 0.30));
-  }
-
-  @override
-  bool shouldRepaint(_AuroraPainter old) => old.t != t;
-}
-
 // --- Teile eines Blocks ------------------------------------------------------
 
 class _BlockHead extends StatelessWidget {
@@ -1058,7 +804,9 @@ class _ErrorBox extends StatelessWidget {
     final l10n = AppL10n.of(context);
     final text = '${l10n.briefingSaveError(error.attempted)} '
         '${l10n.briefingSaveErrorKept(error.previous)}';
-    return Container(
+    return AtemRejectFlicker(
+      trigger: error,
+      child: Container(
       margin: const EdgeInsets.only(top: 12),
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
       decoration: BoxDecoration(
@@ -1100,7 +848,7 @@ class _ErrorBox extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
