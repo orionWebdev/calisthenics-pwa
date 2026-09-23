@@ -176,6 +176,11 @@ Billige Tore zuerst:
 7. `dart run tool/check_conventions.dart` — alle Konventionsregeln, seit Stufe 5 scharf
 8. `flutter build appbundle --release` (nur auf Tags)
 
+**Stand 23.09.2026** (`.github/workflows/ci.yml`): Es laufen 2, 3, 4, 5 und 7. Stufe 1
+fehlt, weil der Bestand nicht durchformatiert ist und ordnerweites Formatieren fremde
+Arbeit verdeckt; Stufe 6, weil es keine Goldens gibt; Stufe 8, weil die Signierung
+lokal liegt. `flutter test` läuft mit `--exclude-tags render,debt`.
+
 Bis Stufe 5 lief das A11y-Tor unter `--exclude-tags a11y` neben der CI her, weil es
 absichtlich rot war. Seit dem Neubau beider Screens ist es grün und läuft im Standardlauf
 mit; der Ausschluss ist entfallen. Falls er je wieder gebraucht wird: **`flutter test` liest

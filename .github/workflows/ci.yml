@@ -1,0 +1,56 @@
+# Das CI-Tor aus docs/contracts/03-architecture.md, § CI.
+#
+# Billige Tore zuerst. Bewusst nicht dabei:
+# - `dart format --set-exit-if-changed`: Der Bestand ist nicht durchformatiert,
+#   und ordnerweites Formatieren ist hier verboten (es verdeckt fremde Arbeit).
+# - `--tags golden`: Es gibt keine Golden-Tests.
+# - `render` und `debt`: Render-Tests schreiben PNG mit lokalen Schriften,
+#   der Schuldenbericht schlägt nie fehl. `flutter test` liest den Ausschluss
+#   nicht aus dart_test.yaml — er muss als Flag dastehen.
+name: CI
+
+on:
+  push:
+    branches: [main, 'flutter/**']
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.1
+          channel: stable
+          cache: true
+
+      - name: Abhängigkeiten
+        run: flutter pub get
+
+      - name: Analyse
+        run: dart analyze --fatal-infos --fatal-warnings lib test
+
+      - name: Konventionen
+        run: dart tool/check_conventions.dart
+
+      - name: Zeichenketten erzeugt und eingecheckt
+        run: |
+          flutter gen-l10n
+          git diff --exit-code lib/l10n/gen
+
+      - name: Keine unübersetzten Zeichenketten
+        run: |
+          if [ "$(tr -d '[:space:]' < l10n/untranslated.json)" != "{}" ]; then
+            cat l10n/untranslated.json
+            exit 1
+          fi
+
+      - name: Tests (inklusive A11y-Tor)
+        run: flutter test --exclude-tags render,debt
