@@ -4,7 +4,7 @@ Diese Datei in den Repo-Root legen. Sie gilt für jede Aufgabe an dieser App.
 
 ## Was hier gebaut wird
 ATEM Hybrid — Android-App (Flutter) für hybrides Training. Ästhetik: Dark Cyber-Athlete.
-Design-Referenzen: `design_handoff_atem_app/` — Spezifikations-Boards für Modul 1–11 und 13–18 plus zwei interaktive Prototypen.
+Design-Referenzen: `design_handoff_atem_app/` — Spezifikations-Boards für Modul 1–11, 13–18 und 18b plus zwei interaktive Prototypen.
 Board 12 (Kraft-Tab als wischbare Seiten) ist durch Board 13 abgelöst und existiert nicht mehr.
 Lesbar ohne Browser: `python3 tool/read_board.py NN`.
 
@@ -84,6 +84,23 @@ Verlauf, Auswertung, Pläne. Kein `PageView`, kein Tab-Kopf.
   die Seite verkauft · Halbkarten = die regelmässigen Alternativen · Zeilen
   mit Chevron = Unterseiten und Seltenes. Nach **Häufigkeit** belegt, nicht
   nach Wichtigkeitsgefühl.
+
+## Bewegung: Licht antwortet, es ruft nicht (Board 18b, seit 23.09.2026)
+- **Fünf Verben, je ein Effekt:** Wählen = Bloom + Kern/Häkchen · Schreiben =
+  Speicher-Scan · Erscheinen = Lichtkante · Ort = Aurora + Titelglanz ·
+  Ablehnen = Flackern + Rücksprung. Ein Effekt nur dort, wo genau dieses Verb
+  gerade geschehen ist.
+- **Kein Baustein entscheidet selbst, ob er leuchtet** — er fragt
+  `AtemReceiptScope` (Stufe Standard · Fokus im Runner · Still bei
+  „Animationen reduzieren", Tempo-Dämpfung 700 ms, Kante einmal je Gegenstand
+  und Besuch, die jüngste Berührung gewinnt).
+- **Nichts leuchtet an Offenem, Fehlendem, Unerledigtem.** Kein stehender
+  Schein an Punkten. Dauerschleifen gibt es genau zwei: die Aurora (nur
+  Unterseiten; auf Plankarten stehend) und das Ladeskelett.
+- Kurven und Dauern nur aus `AtemMotion` (`settle`, `pop`, `draw`, `travel`,
+  `enter`, `exit`, `drift`, `press`).
+- Haptik bestätigt die Berührung, nie das Ergebnis: Raste bei Wahl, mittel
+  nur beim Satz abhaken, nie beim Speichern oder Ablehnen.
 
 ## Text und Erklärungen (seit 17.09.2026)
 - **Drei Textstufen:** Weiss für Titel und die Hauptzahl eines Blocks · `#CDD3EA` nur für Sätze, die gelesen werden · `#94A3B8` für Metazeilen, Grundlage und Beschriftungen. Die Hauptzahl trägt den Akzent des Bereichs (Kraft Amber, sonst Cyan) — ein Blickfang je Block, keine Ampelfarben.

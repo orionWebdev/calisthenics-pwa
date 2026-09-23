@@ -82,6 +82,17 @@ Du übernimmst die Arbeit an **ATEM Hybrid** (Flutter, Android). Lies zuerst, da
    `Plan` (der ist eine Übungsliste). Und Board 04 hat entschieden „Nur was ohne Angabe
    eine falsche Zahl erzeugt, darf den Einstieg blockieren" — ein Zielbriefing gehört
    deshalb **nicht** in das Onboarding.
+3b. ~~Board 18b — Bewegungsgrammatik~~ — **gebaut am 23.09.** (sechs Commits
+   `feat(18b)`, Regeln jetzt auch in `CLAUDE.md`). Offen daraus: die Kante für
+   „erstmals gesehen" (gespeicherte Einheit im Verlauf, freigeschalteter
+   Auswertungsblock — braucht ein Gedächtnis über App-Sitzungen hinweg), die
+   Querblende beim Übungswechsel im Runner, die Ansage „Satz 3 erledigt.
+   Pause 90 Sekunden." prüfen, und der Scan an Einstellungsblöcken.
+3c. **Board 19 (Woche von Hand)** und **Board 21 (Hauptmuskel und
+   Hilfsmuskeln)** — beide Prompts liegen in `docs/design-prompts/`, beide
+   warten auf Claude Design. 21 ist datenseitig vorbereitet: alle 84
+   kuratierten Übungen tragen `primaryMuscles`, die App verschmilzt sie heute
+   in `displayMuscles` und zählt Hilfsmuskeln in der Muskelbalance voll.
 4. **Store-Vorlauf**, sobald der Nutzer die Gewerbefrage entschieden hat. Die
    Datenschutzseite ist für die Health-Connect-Freigabe Pflicht und braucht fünf Angaben,
    die nur er hat. Persönliche Play-Konten von nach dem 13.11.2023 brauchen ausserdem
