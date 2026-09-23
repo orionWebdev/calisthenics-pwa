@@ -64,6 +64,7 @@ class SetRow extends StatelessWidget {
     this.onToggleSide,
     this.onOpenRpe,
     this.rpeOpen = false,
+    this.isNext = false,
   });
 
   final WorkoutSet set;
@@ -99,6 +100,10 @@ class SetRow extends StatelessWidget {
   /// Steht der Streifen dieses Satzes gerade offen?
   final bool rpeOpen;
 
+  /// Der erste offene Satz der Übung. Er steht auf `surfaceRaised`, ohne
+  /// Schein: Er ist „dran", aber Unerledigtes leuchtet nie (Board 18b, C4).
+  final bool isNext;
+
   /// Ab hier trägt die Zeile ihre fünf Spalten nicht mehr.
   static bool isCompact(BuildContext context) =>
       MediaQuery.textScalerOf(context).scale(12) > 16 ||
@@ -131,8 +136,12 @@ class SetRow extends StatelessWidget {
     final main =
         compact ? _compactLayout(context, l10n) : _wideLayout(context, l10n);
 
+    // **Die erledigte Zeile tritt zurück** (Board 18b, C4): Man tippt und
+    // schaut weg. Was bleibt, trägt — gefüllter Knopf, gezeichnetes Häkchen,
+    // die Zeile auf `surfaceSolid`. Kein Schein, kein Grün-Leuchten.
     return AnimatedContainer(
-      duration: AtemMotion.duration(context, AtemMotion.normal),
+      duration: AtemMotion.duration(context, AtemMotion.dPress),
+      curve: AtemMotion.press,
       margin: const EdgeInsets.only(bottom: AtemSpacing.sm),
       padding: const EdgeInsets.symmetric(
           horizontal: rowPadding, vertical: AtemSpacing.sm),
@@ -141,14 +150,12 @@ class SetRow extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 64),
       decoration: BoxDecoration(
         color: set.done
-            ? AtemColors.green.withValues(alpha: 0.07)
-            : AtemColors.card.withValues(alpha: 0.8),
+            ? AtemColors.surfaceSolid
+            : isNext
+                ? AtemColors.surfaceRaised
+                : AtemColors.card.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: set.done
-              ? AtemColors.green.withValues(alpha: 0.35)
-              : AtemColors.border,
-        ),
+        border: Border.all(color: AtemColors.border),
       ),
       child: !set.done
           ? main
@@ -478,68 +485,82 @@ class SetRow extends StatelessWidget {
             ? l10n.workoutA11ySetUnlock(index)
             : l10n.workoutA11ySetComplete(index),
         selected: set.done,
-        haptic: AtemHaptic.medium,
+        // Die einzige mittlere Stufe der App: Dort fehlt das Auge, die Hand
+        // soll wissen, dass der Satz zählt. Zurücknehmen spürbar anders,
+        // damit ein Fehlgriff ohne Blick auffällt (Board 18b, G).
+        haptic: set.done ? AtemHaptic.light : AtemHaptic.medium,
         child: AnimatedContainer(
           duration: AtemMotion.duration(context, AtemMotion.fast),
+          curve: AtemMotion.press,
           width: doneVisibleWidth,
           height: doneVisibleWidth,
+          // Gefüllt in Cyan — „gewählt" heisst überall Cyan (Board 18b, C4).
+          // Kein stehender Schein: Fünf Sätze in drei Sekunden sind fünf
+          // Häkchen, fünf Rasten, null Licht.
           decoration: BoxDecoration(
-            color: set.done ? AtemColors.green : AtemColors.surfaceSolid,
+            color: set.done ? AtemColors.cyan : AtemColors.surfaceSolid,
             borderRadius: BorderRadius.circular(13),
             border: Border.all(
-              color: set.done ? AtemColors.green : const Color(0xFF3A3A52),
+              color: set.done ? AtemColors.cyan : const Color(0xFF3A3A52),
             ),
-            boxShadow: set.done
-                ? [
-                    BoxShadow(
-                      color: AtemColors.green.withValues(alpha: 0.7),
-                      blurRadius: 18,
-                      spreadRadius: -2,
-                    )
-                  ]
-                : null,
           ),
-          // Der Haken erscheint NUR im abgehakten Zustand. Vorher stand er in
-          // beiden Zuständen und nur seine Farbe wechselte — Form statt Farbe.
+          // Der Haken erscheint NUR im abgehakten Zustand und zieht sich als
+          // Strich (240 ms, `draw`). Form statt Farbe.
           child: set.done
-              ? const _Checkmark(color: AtemColors.base)
+              ? TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: 1),
+                  duration: AtemMotion.duration(
+                      context, AtemMotion.dRunnerCheck + const Duration(milliseconds: 60)),
+                  curve: const Interval(0.2, 1, curve: AtemMotion.draw),
+                  builder: (context, t, _) =>
+                      _Checkmark(color: AtemColors.onNeon, progress: t),
+                )
               : const SizedBox.shrink(),
         ),
       );
 }
 
 class _Checkmark extends StatelessWidget {
-  const _Checkmark({required this.color});
+  const _Checkmark({required this.color, this.progress = 1});
   final Color color;
+
+  /// 0 → 1: wie weit der Strich gezogen ist.
+  final double progress;
 
   @override
   Widget build(BuildContext context) => CustomPaint(
-        painter: _CheckPainter(color),
+        painter: _CheckPainter(color, progress),
         size: const Size.square(22),
       );
 }
 
 class _CheckPainter extends CustomPainter {
-  _CheckPainter(this.color);
+  _CheckPainter(this.color, this.progress);
   final Color color;
+  final double progress;
 
   @override
   void paint(Canvas canvas, Size size) {
     final s = size.shortestSide;
-    canvas.drawPath(
-      Path()
-        ..moveTo(s * 0.22, s * 0.52)
-        ..lineTo(s * 0.42, s * 0.72)
-        ..lineTo(s * 0.78, s * 0.28),
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = s * 0.13
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round
-        ..color = color,
-    );
+    final path = Path()
+      ..moveTo(s * 0.22, s * 0.52)
+      ..lineTo(s * 0.42, s * 0.72)
+      ..lineTo(s * 0.78, s * 0.28);
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = s * 0.13
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = color;
+    if (progress >= 1) {
+      canvas.drawPath(path, paint);
+      return;
+    }
+    final metric = path.computeMetrics().first;
+    canvas.drawPath(metric.extractPath(0, metric.length * progress), paint);
   }
 
   @override
-  bool shouldRepaint(_CheckPainter old) => old.color != color;
+  bool shouldRepaint(_CheckPainter old) =>
+      old.color != color || old.progress != progress;
 }

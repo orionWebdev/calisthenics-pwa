@@ -806,6 +806,10 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     SetRow(
                       set: exercise.sets[i],
                       index: i + 1,
+                      // Der erste offene Satz steht auf der angehobenen
+                      // Fläche — ohne Schein, er ist Unerledigtes.
+                      isNext: i ==
+                          exercise.sets.indexWhere((s) => !s.done),
                       effortScale: effortScale,
                       isHold: exercise.isHold,
                       unilateral: exercise.unilateral,
