@@ -19,17 +19,9 @@ abstract final class AtemMotion {
   /// Score-Count-up beim Laden des Dashboards.
   static const countUp = Duration(milliseconds: 1400);
 
-  /// Dauerschleifen aus den Design-Referenzen.
-  static const brandDotFlicker = Duration(milliseconds: 2600);
-  static const livePulse = Duration(milliseconds: 1800);
-  static const buttonGlowPulse = Duration(milliseconds: 2200);
-
-  /// Ruhepuls des jüngsten Punkts einer Kurve (Board 14, G).
-  ///
-  /// Deckkraft und Radius eines Rings, **kein Farbwechsel** — die Farbe trägt
-  /// dort schon die Herkunft des Punktes.
-  static const latestPointPulse = Duration(milliseconds: 2200);
-  static const sessionDotPulse = Duration(milliseconds: 1200);
+  // Dauerschleifen gibt es seit Board 18b nur noch zwei: die Aurora
+  // (dAurora) und das Ladeskelett. Live-Puls, Markenflackern, CTA-Puls,
+  // Sitzungspunkt und der Ruhepuls der Gewichtskurve sind gefallen.
 
   static const curve = Curves.easeOutCubic;
 

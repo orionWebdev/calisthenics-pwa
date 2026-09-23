@@ -9,61 +9,22 @@ import '../../../../core/widgets/widgets.dart';
 /// beim Übergang blenden nur die Elemente darunter ein. Ein Markenblock, der
 /// nach dem Laden springt, lässt die App unfertig wirken, bevor sie überhaupt
 /// etwas gezeigt hat.
-class BrandBlock extends StatefulWidget {
+class BrandBlock extends StatelessWidget {
   const BrandBlock({super.key, this.semanticLabel});
 
   /// Wenn gesetzt, trägt der Block die Ansage — auf dem Splash ist er das
   /// einzige Element und damit der einzige Ort dafür.
   final String? semanticLabel;
 
-  @override
-  State<BrandBlock> createState() => _BrandBlockState();
-}
-
-class _BrandBlockState extends State<BrandBlock>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _flicker = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 2600),
-  );
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Dekorativ: Bei „Bewegung reduzieren" bleibt der Punkt einfach an.
-    AtemMotion.syncLoop(context, _flicker, restingValue: 1);
-  }
-
-  @override
-  void dispose() {
-    _flicker.dispose();
-    super.dispose();
-  }
-
+  // Das Flackern des Markenpunkts fiel (Board 18b, K5): Flackern heisst
+  // jetzt „abgelehnt" und wird nie gedämpft — ein Logo darf dieses Wort
+  // nicht dauernd sprechen. Der Punkt steht flach.
   @override
   Widget build(BuildContext context) {
     final block = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AnimatedBuilder(
-          animation: _flicker,
-          builder: (context, child) {
-            // Nachbau des Marken-Flackerns aus Modul 1: kurze Aussetzer, kein
-            // gleichmässiges Pulsieren.
-            final t = _flicker.value;
-            final opacity = t < 0.08
-                ? 1.0
-                : t < 0.12
-                    ? 0.25
-                    : t < 0.40
-                        ? 1.0
-                        : t < 0.46
-                            ? 0.55
-                            : 1.0;
-            return Opacity(opacity: opacity, child: child);
-          },
-          child: const AtemStatusDot(color: AtemColors.green),
-        ),
+        const AtemStatusDot(color: AtemColors.green),
         const SizedBox(width: 10),
         // Flexibel, damit der Block bei 200 % Schrift auf 320 dp nicht über
         // den Rand läuft. Der Markenname wird dabei zur Not abgeschnitten —
@@ -93,11 +54,11 @@ class _BrandBlockState extends State<BrandBlock>
       child: block,
     );
 
-    if (widget.semanticLabel == null) {
+    if (semanticLabel == null) {
       return ExcludeSemantics(child: decorated);
     }
     return Semantics(
-      label: widget.semanticLabel,
+      label: semanticLabel,
       liveRegion: true,
       child: ExcludeSemantics(child: decorated),
     );

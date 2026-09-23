@@ -161,13 +161,21 @@ void main() {
       handle.dispose();
     });
 
-    testWidgets('pulsiert nicht bei reduzierter Bewegung', (tester) async {
-      await _pump(
-        tester,
-        const AtemStatusDot(color: AtemColors.green, pulsing: true),
+    testWidgets('hat keine Schleife und keinen Schein (Board 18b, K2/G6)',
+        (tester) async {
+      await _pump(tester, const AtemStatusDot(color: AtemColors.green));
+      expect(
+        find.descendant(
+          of: find.byType(AtemStatusDot),
+          matching: find.byType(AnimatedBuilder),
+        ),
+        findsNothing,
       );
-      // pumpAndSettle terminiert — der Beweis, dass die Schleife steht.
-      expect(tester.takeException(), isNull);
+      final box = tester.widget<DecoratedBox>(find.descendant(
+        of: find.byType(AtemStatusDot),
+        matching: find.byType(DecoratedBox),
+      ));
+      expect((box.decoration as BoxDecoration).boxShadow, isNull);
     });
   });
 }

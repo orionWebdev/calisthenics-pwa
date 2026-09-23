@@ -201,7 +201,8 @@ class _Fab extends StatelessWidget {
       semanticLabel: l10n.cardioAdd,
       expand: false,
       size: AtemButtonSize.compact,
-      glow: AtemColors.magenta,
+      // Kein stehender Schein (Board 18b, C9): Der Knopf antwortet auf den
+      // Druck, er ruft nicht.
       leading: const Icon(Icons.add, size: 18, color: AtemColors.textPrimary),
       onPressed: onTap,
     );
@@ -298,7 +299,6 @@ class _LiveNotice extends ConsumerWidget {
             color: draft.clock.isPaused
                 ? AtemColors.textSecondary
                 : AtemColors.green,
-            pulsing: !draft.clock.isPaused,
           ),
           const SizedBox(width: 10),
           Expanded(

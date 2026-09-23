@@ -6,6 +6,7 @@ import '../theme/atem_glow.dart';
 import '../theme/atem_gradients.dart';
 import '../theme/atem_motion.dart';
 import '../theme/atem_type.dart';
+import 'atem_answer.dart' show AtemSelectBloom;
 import 'atem_tappable.dart';
 
 /// Höhe eines Buttons.
@@ -191,13 +192,18 @@ class AtemButton extends StatelessWidget {
                     _enabled ? tint.withValues(alpha: 0.6) : AtemColors.border,
               )
             : null,
+        // Der Verlaufsknopf ruht ohne Schein und antwortet auf den Druck mit
+        // einem Magenta-Bloom (Board 18b, C9) — ein Knopf, der dauernd
+        // leuchtet, sagt jeden Tag „du hast noch nicht". Bei „Animationen
+        // reduzieren" trägt ein Schein in Deep Rose den Druck.
         boxShadow: !_enabled
             ? null
             : pressed
-                ? AtemGlow.soft(
-                    _variant == _Variant.gradient ? AtemColors.magenta : tint,
-                    opacity: 0.55,
-                  )
+                ? (_variant == _Variant.gradient
+                    ? (AtemMotion.reduced(context)
+                        ? AtemGlow.soft(AtemColors.magentaDeep, opacity: 0.55)
+                        : null)
+                    : AtemGlow.soft(tint, opacity: 0.55))
                 : (glow != null ? AtemGlow.soft(glow!, opacity: 0.35) : null),
       ),
       child: content,
@@ -210,7 +216,15 @@ class AtemButton extends StatelessWidget {
       haptic: haptic,
       minTapSize: Size(0, size.height),
       pressBuilder: (context, pressed) {
-        final decorated = decoratedWith(pressed);
+        final decorated = _variant == _Variant.gradient
+            ? AtemSelectBloom(
+                active: pressed,
+                radius: AtemRadii.pill,
+                color: AtemColors.magenta,
+                duration: AtemMotion.dCtaBloom,
+                child: decoratedWith(pressed),
+              )
+            : decoratedWith(pressed);
         return expand
             ? SizedBox(width: double.infinity, child: decorated)
             : decorated;

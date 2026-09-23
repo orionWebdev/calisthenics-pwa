@@ -44,7 +44,6 @@ class AtemBadge extends StatelessWidget {
     this.fill = AtemBadgeFill.outline,
     this.accent,
     this.leadingDot = false,
-    this.pulsingDot = false,
     this.leadingIcon,
     this.style,
   })  : onTap = null,
@@ -61,7 +60,6 @@ class AtemBadge extends StatelessWidget {
     this.leadingIcon,
     this.style,
   })  : leadingDot = false,
-        pulsingDot = false,
         _isCounter = false;
 
   /// Der Benachrichtigungszähler — die einzige volle Pille im System.
@@ -72,7 +70,6 @@ class AtemBadge extends StatelessWidget {
   })  : fill = AtemBadgeFill.solid,
         accent = AtemColors.magenta,
         leadingDot = false,
-        pulsingDot = false,
         leadingIcon = null,
         onTap = null,
         style = null,
@@ -89,7 +86,6 @@ class AtemBadge extends StatelessWidget {
 
   /// Führender Statuspunkt. Pflicht bei Akzent, sofern kein [leadingIcon].
   final bool leadingDot;
-  final bool pulsingDot;
 
   /// Führendes Symbol, 12 dp. Punkt zeigt Zustand, Symbol zeigt Kategorie.
   final Widget? leadingIcon;
@@ -132,7 +128,7 @@ class AtemBadge extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (leadingDot) ...[
-          AtemStatusDot(color: tint, pulsing: pulsingDot),
+          AtemStatusDot(color: tint),
           const SizedBox(width: 6),
         ] else if (leadingIcon != null) ...[
           ExcludeSemantics(child: leadingIcon!),

@@ -59,24 +59,31 @@ class WeightChart extends StatefulWidget {
   State<WeightChart> createState() => _WeightChartState();
 }
 
+/// **Kein Ruhepuls mehr** (Board 18b, C5 und K3). Er zog täglich den Blick
+/// auf einen Gewichtswert — eine Zahl, die die App bewusst nicht bewertet;
+/// „jüngster" ist ein Datum, kein Ereignis. Jetzt antwortet der Punkt
+/// **einmal** auf einen neuen Eintrag: ein Ring läuft in 700 ms aus. Danach
+/// markiert ihn ein stehender Ring ohne Schein. Kein Scan — der Ort der
+/// Aussage ist die Kurve, nicht der Blockrand (G7).
 class _WeightChartState extends State<WeightChart>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _pulse = AnimationController(
-    vsync: this,
-    duration: AtemMotion.latestPointPulse,
-  );
+  late final AnimationController _ring =
+      AnimationController(vsync: this, duration: AtemMotion.dPointRing);
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Bei reduzierter Bewegung steht der Ring still statt halb eingefroren zu
-    // pulsieren: `syncLoop` hält ihn auf dem Ruhewert 0 — kein Ring.
-    AtemMotion.syncLoop(context, _pulse, restingValue: 0);
+  void didUpdateWidget(WeightChart old) {
+    super.didUpdateWidget(old);
+    final before = old.series.latest?.documentId;
+    final after = widget.series.latest?.documentId;
+    if (before != null && after != null && before != after &&
+        !AtemMotion.reduced(context)) {
+      _ring.forward(from: 0);
+    }
   }
 
   @override
   void dispose() {
-    _pulse.dispose();
+    _ring.dispose();
     super.dispose();
   }
 
@@ -92,11 +99,13 @@ class _WeightChartState extends State<WeightChart>
         height: widget.height,
         width: double.infinity,
         child: AnimatedBuilder(
-          animation: _pulse,
+          animation: _ring,
           builder: (context, _) => CustomPaint(
             painter: _WeightChartPainter(
               series: widget.series,
-              pulse: _pulse.value,
+              pulse: _ring.isAnimating
+                  ? AtemMotion.settle.transform(_ring.value)
+                  : 0,
             ),
           ),
         ),
@@ -193,15 +202,27 @@ class _WeightChartPainter extends CustomPainter {
       } else {
         canvas.drawCircle(p, radius, filled);
       }
-      if (isLatest && pulse > 0) {
+      if (isLatest) {
+        // Der stehende Ring: markiert den jüngsten Punkt ohne Schein.
         canvas.drawCircle(
           p,
-          _latestRadius + pulse * 5,
+          _latestRadius + 3,
           Paint()
-            ..color = AtemColors.cyan.withValues(alpha: (1 - pulse) * 0.55)
-            ..strokeWidth = 1.5
+            ..color = AtemColors.cyan.withValues(alpha: 0.45)
+            ..strokeWidth = 1
             ..style = PaintingStyle.stroke,
         );
+        // Die Quittung: einmal, wenn der Punkt neu ist.
+        if (pulse > 0) {
+          canvas.drawCircle(
+            p,
+            _latestRadius + 3 + pulse * 6,
+            Paint()
+              ..color = AtemColors.cyan.withValues(alpha: (1 - pulse) * 0.55)
+              ..strokeWidth = 1.5
+              ..style = PaintingStyle.stroke,
+          );
+        }
       }
     }
   }

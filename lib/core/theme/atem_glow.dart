@@ -31,29 +31,6 @@ abstract final class AtemGlow {
     BoxShadow(color: Color(0x99000000), blurRadius: 28, offset: Offset(0, 10)),
   ];
 
-  /// Pulsierender Primary-Button — Endzustände für einen AnimationController.
-  static final List<BoxShadow> buttonPulseLow = [
-    BoxShadow(
-        color: AtemColors.magenta.withValues(alpha: 0.55),
-        blurRadius: 18,
-        spreadRadius: -2),
-    BoxShadow(
-        color: AtemColors.cyan.withValues(alpha: 0.40),
-        blurRadius: 34,
-        spreadRadius: -6),
-  ];
-
-  static final List<BoxShadow> buttonPulseHigh = [
-    BoxShadow(
-        color: AtemColors.magenta.withValues(alpha: 0.85),
-        blurRadius: 32,
-        spreadRadius: 2),
-    BoxShadow(
-        color: AtemColors.cyan.withValues(alpha: 0.65),
-        blurRadius: 50,
-        spreadRadius: -2),
-  ];
-
   /// Floating Bottom-Nav.
   static final List<BoxShadow> nav = [
     const BoxShadow(

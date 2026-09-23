@@ -69,7 +69,6 @@ class SessionTopBar extends StatelessWidget {
                           color: paused
                               ? AtemColors.textSecondary
                               : AtemColors.green,
-                          pulsing: !paused,
                         ),
                         const SizedBox(width: 7),
                         Flexible(

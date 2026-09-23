@@ -227,7 +227,6 @@ class _Running extends StatelessWidget {
                       accent: paused ? AtemColors.textSecondary : AtemColors.green,
                       fill: AtemBadgeFill.tinted,
                       leadingDot: true,
-                      pulsingDot: !paused,
                     ),
                   ),
                 ],
