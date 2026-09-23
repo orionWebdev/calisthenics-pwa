@@ -8815,6 +8815,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'So will ich wieder trainieren'**
   String get briefingDescribesIntendedShort;
+
+  /// Board 18b · C7, Kicker im Unterseitenkopf
+  ///
+  /// In de, this message translates to:
+  /// **'HYBRID · EINSTELLUNGEN'**
+  String get subpageKickerSettings;
+
+  /// Board 18b · C7, Kicker im Unterseitenkopf
+  ///
+  /// In de, this message translates to:
+  /// **'HYBRID · GEWICHT'**
+  String get subpageKickerWeight;
+
+  /// Board 18b · C7, Kicker im Unterseitenkopf
+  ///
+  /// In de, this message translates to:
+  /// **'CARDIO · ZONEN'**
+  String get subpageKickerZones;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

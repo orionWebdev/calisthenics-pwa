@@ -346,10 +346,16 @@ class AtemSubpageTitle extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Semantics(
-                header: true,
-                child: AtemTitleSheen(tone: tone, child: title),
-              ),
+              // Ein schlichter Text wird hier zur Überschrift. Ein
+              // `AtemExplainHeader` markiert seinen Titel selbst — eine
+              // Überschrift darum schluckte sonst sein ⓘ in einen Knoten.
+              if (title is Text)
+                Semantics(
+                  header: true,
+                  child: AtemTitleSheen(tone: tone, child: title),
+                )
+              else
+                AtemTitleSheen(tone: tone, child: title),
               ...below,
             ],
           ),
@@ -357,4 +363,96 @@ class AtemSubpageTitle extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Eine Unterseite mit dem Kopf aus Board 18b, C7: Glasleiste mit Kicker,
+/// Aurora im Bereichston hinter dem Titel, einmaliger Titelglanz beim Push.
+///
+/// [children] sind der Inhalt unter dem Titel, als Liste wie in einem
+/// `ListView` — die Seite scrollt als Ganzes, und die Aurora wandert unter
+/// die Leiste, wo deren `BackdropFilter` sie mitblurrt. Einen zweiten Filter
+/// gibt es nicht.
+class AtemSubpageScaffold extends StatelessWidget {
+  const AtemSubpageScaffold({
+    super.key,
+    required this.kicker,
+    required this.backLabel,
+    required this.tone,
+    required this.title,
+    required this.children,
+    this.below = const [],
+    this.padding = const EdgeInsets.fromLTRB(
+        AtemSpacing.screenPadding, 16, AtemSpacing.screenPadding, 40),
+  });
+
+  /// „KRAFT · ÜBUNG" — der Ort als Wort, in Versalien.
+  final String kicker;
+  final String backLabel;
+
+  /// Der Bereichston; `null` für Seiten ohne Bereich.
+  final Color? tone;
+
+  /// Der Titel — ein `Text` oder ein `AtemExplainHeader`.
+  final Widget title;
+
+  /// Hinweis- und Metazeilen direkt unter dem Titel.
+  final List<Widget> below;
+
+  final List<Widget> children;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: AtemColors.base,
+      child: CustomScrollView(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: AtemSubpageBar.of(
+              context,
+              kicker: kicker,
+              backLabel: backLabel,
+              tone: tone,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: AtemSubpageTitle(tone: tone, title: title, below: below),
+          ),
+          SliverPadding(
+            padding: padding.copyWith(
+              bottom: padding.bottom + MediaQuery.paddingOf(context).bottom,
+            ),
+            sliver: SliverList.list(children: children),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Die Aurora hinter einem vorhandenen Kopf — für Unterseiten, deren Kopf
+/// ein eigener Entwurf ist (Übungsdetail, Board 09; Einheitendetail,
+/// Board 16). Sie ragt 64 dp nach oben und 50 dp zu den Seiten hinaus und
+/// liegt hinter dem Inhalt; Semantics und Treffer gehen durch.
+class AtemAuroraBehind extends StatelessWidget {
+  const AtemAuroraBehind({super.key, required this.tone, required this.child});
+
+  final Color? tone;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            left: -50,
+            right: -50,
+            top: -64,
+            height: 200,
+            child: AtemAurora(tone: tone),
+          ),
+          child,
+        ],
+      );
 }

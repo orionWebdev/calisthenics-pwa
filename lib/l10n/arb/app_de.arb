@@ -8980,7 +8980,7 @@
   "@briefingSnackWeekB": {
     "description": "briefing.snack.week_b"
   },
-  "briefingTitle": "Trainings\u00ADangaben",
+  "briefingTitle": "Trainings­angaben",
   "@briefingTitle": {
     "description": "briefing.title"
   },
@@ -9136,5 +9136,17 @@
   "briefingDescribesIntendedShort": "So will ich wieder trainieren",
   "@briefingDescribesIntendedShort": {
     "description": "Board 18 · Zusammenfassung Frage 8"
+  },
+  "subpageKickerSettings": "HYBRID · EINSTELLUNGEN",
+  "@subpageKickerSettings": {
+    "description": "Board 18b · C7, Kicker im Unterseitenkopf"
+  },
+  "subpageKickerWeight": "HYBRID · GEWICHT",
+  "@subpageKickerWeight": {
+    "description": "Board 18b · C7, Kicker im Unterseitenkopf"
+  },
+  "subpageKickerZones": "CARDIO · ZONEN",
+  "@subpageKickerZones": {
+    "description": "Board 18b · C7, Kicker im Unterseitenkopf"
   }
 }

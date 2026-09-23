@@ -198,6 +198,12 @@ void main() {
           locale: const Locale('de'),
           localizationsDelegates: AppL10n.localizationsDelegates,
           supportedLocales: AppL10n.supportedLocales,
+          // Die Aurora hinter dem Kopf ist eine Dauerschleife (Board 18b);
+          // ohne „Animationen reduzieren" käme pumpAndSettle nie zur Ruhe.
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: true),
+            child: child!,
+          ),
           home: Builder(
             builder: (context) => Scaffold(
               body: Center(

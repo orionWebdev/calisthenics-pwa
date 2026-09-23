@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../theme/theme.dart';
+import 'atem_receipts.dart';
 
 /// Der Auftritt eines Blocks — **steigen und aufblenden, versetzt**.
 ///
@@ -79,7 +80,7 @@ class _AtemEntranceState extends State<AtemEntrance>
   );
 
   late final Animation<double> _t =
-      CurvedAnimation(parent: _c, curve: AtemMotion.curve);
+      CurvedAnimation(parent: _c, curve: AtemMotion.enter);
 
   bool _started = false;
   ScrollPosition? _watched;
@@ -92,7 +93,13 @@ class _AtemEntranceState extends State<AtemEntrance>
     super.didChangeDependencies();
     if (_started) return;
 
-    if (AtemMotion.reduced(context)) {
+    // Sofort da: bei „Animationen reduzieren", im Runner (Stufe Fokus) und
+    // auf einem Bildschirm, der in dieser App-Sitzung schon einmal
+    // eingelaufen ist (Board 18b, G5) — ein Einflug auf dem Tab, den man
+    // zwanzigmal am Tag öffnet, ist nach einer Woche Tapete.
+    if (AtemMotion.reduced(context) ||
+        AtemReceiptScope.of(context).stage != AtemReceiptStage.standard ||
+        AtemEntranceScope.alreadyPlayed(context)) {
       _started = true;
       _c.value = 1;
       return;
@@ -213,7 +220,7 @@ class _AtemRevealState extends State<AtemReveal>
       AnimationController(vsync: this, duration: widget.duration);
 
   late final Animation<double> _t =
-      CurvedAnimation(parent: _c, curve: AtemMotion.curve);
+      CurvedAnimation(parent: _c, curve: AtemMotion.enter);
 
   bool _started = false;
 
@@ -284,4 +291,52 @@ class _SweepClipper extends CustomClipper<Rect> {
 
   @override
   bool shouldReclip(_SweepClipper old) => old.t != t;
+}
+
+/// Das Sitzungsgedächtnis der Kaskade (Board 18b, G5).
+///
+/// Umschliesst einen Bildschirm. Beim ersten Aufbau in dieser App-Sitzung
+/// laufen seine Blöcke ein; wird er danach neu gebaut — Tab-Wechsel,
+/// Rückkehr —, stehen sie sofort. Gemerkt wird je [id], nicht je Instanz,
+/// und nur für die Laufzeit der App.
+class AtemEntranceScope extends StatefulWidget {
+  const AtemEntranceScope({super.key, required this.id, required this.child});
+
+  final String id;
+  final Widget child;
+
+  static final _played = <String>{};
+
+  /// Ist der umgebende Bildschirm in dieser Sitzung schon eingelaufen?
+  static bool alreadyPlayed(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<_EntranceMemory>()
+          ?.alreadyPlayed ??
+      false;
+
+  /// Nur für Tests: vergisst, was schon eingelaufen ist.
+  @visibleForTesting
+  static void resetForTest() => _played.clear();
+
+  @override
+  State<AtemEntranceScope> createState() => _AtemEntranceScopeState();
+}
+
+class _AtemEntranceScopeState extends State<AtemEntranceScope> {
+  late final bool _alreadyPlayed =
+      !AtemEntranceScope._played.add(widget.id);
+
+  @override
+  Widget build(BuildContext context) =>
+      _EntranceMemory(alreadyPlayed: _alreadyPlayed, child: widget.child);
+}
+
+class _EntranceMemory extends InheritedWidget {
+  const _EntranceMemory({required this.alreadyPlayed, required super.child});
+
+  final bool alreadyPlayed;
+
+  @override
+  bool updateShouldNotify(_EntranceMemory old) =>
+      old.alreadyPlayed != alreadyPlayed;
 }

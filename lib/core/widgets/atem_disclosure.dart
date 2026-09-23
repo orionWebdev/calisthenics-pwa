@@ -18,8 +18,8 @@ class AtemDisclosure extends StatelessWidget {
     super.key,
     required this.open,
     required this.child,
-    this.duration = const Duration(milliseconds: 200),
-    this.curve = Curves.easeInOutCubic,
+    this.duration = AtemMotion.dOpen,
+    this.curve = AtemMotion.settle,
   });
 
   final bool open;

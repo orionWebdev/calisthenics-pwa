@@ -72,7 +72,12 @@ class ExerciseDetailScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(
               AtemSpacing.screenPadding, 12, AtemSpacing.screenPadding, 40),
           children: [
-            _Header(exercise: exercise),
+            // Die Aurora im Kraft-Ton hinter dem eigenen Kopf aus Board 09
+            // (Board 18b, C7): „eine Ebene tiefer, in Kraft".
+            AtemAuroraBehind(
+              tone: AtemColors.tabStrength,
+              child: _Header(exercise: exercise),
+            ),
             const SizedBox(height: 16),
             // Muskeln als Pillen; dahinter die Herkunft als Wort (Board 07,
             // A3): EIGEN oder KURATIERT entscheidet, ob es einen

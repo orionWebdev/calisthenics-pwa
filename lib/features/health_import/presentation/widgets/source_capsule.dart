@@ -106,7 +106,14 @@ class _SourceCapsuleState extends ConsumerState<SourceCapsule> {
 
     final explain = _explainLoad(l10n, session, measured);
 
-    return Column(
+    // Aufklappen ist ein Erscheinen aus eigener Handlung: einmal je Besuch
+    // die Lichtkante (Board 18b, C6). Zuklappen hat keine.
+    return AtemEdgeSweep(
+      trigger: _open,
+      when: _open,
+      edgeKey: #sourceCapsule,
+      radius: 16,
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AtemTappable(
@@ -157,7 +164,6 @@ class _SourceCapsuleState extends ConsumerState<SourceCapsule> {
         ),
         AtemDisclosure(
           open: _open,
-          curve: Curves.easeOutCubic,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
             child: Column(
@@ -205,6 +211,7 @@ class _SourceCapsuleState extends ConsumerState<SourceCapsule> {
           ),
         ),
       ],
+    ),
     );
   }
 

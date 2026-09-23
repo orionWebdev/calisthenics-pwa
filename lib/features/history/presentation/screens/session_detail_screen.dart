@@ -111,7 +111,18 @@ class SessionDetailScreen extends ConsumerWidget {
               AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
           children: [
             const _BackRow(),
-            block(DetailHeader(session: live, text: text)),
+            // Die Aurora im Ton der Art hinter dem eigenen Kopf aus Board 16
+            // (Board 18b, C7): „eine Ebene tiefer, in Kraft / Cardio /
+            // Regeneration".
+            block(AtemAuroraBehind(
+              tone: switch (live) {
+                StrengthSession() => AtemColors.tabStrength,
+                CardioSession() => AtemColors.tabCardio,
+                RecoverySession() => AtemColors.tabRecovery,
+                UnknownSession() => null,
+              },
+              child: DetailHeader(session: live, text: text),
+            )),
 
             // ---- 2 · Kennzahlen -----------------------------------------
             // Solange die Uhr antwortet, stehen die Kacheln im Skelett: vier,

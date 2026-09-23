@@ -190,18 +190,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 WeightUi.source(l10n, latest.source),
               ));
 
+    // Unterseitenkopf aus Board 18b, C7: Einstellungen liegen im
+    // Hybrid-Stapel (Profilbild im Hybrid-Kopf), daher der Hybrid-Ton.
     return Scaffold(
       backgroundColor: AtemColors.base,
-      appBar: AppBar(
-        backgroundColor: AtemColors.base,
-        title:
-            Text(l10n.settingsTitle, style: AtemType.titleMedium.of(context)),
-      ),
-      body: SafeArea(
-        top: false,
-        child: ListView(
+      body: AtemSubpageScaffold(
+          kicker: l10n.subpageKickerSettings,
+          backLabel: l10n.commonBack,
+          tone: AtemColors.tabHybrid,
+          title: Text(l10n.settingsTitle,
+              style: AtemType.titleLarge.of(context).copyWith(fontSize: 22)),
           padding: const EdgeInsets.fromLTRB(
-              AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
+              AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 40),
           children: [
             // Der Hinweis „Text nicht geladen" gehört seit 17.09.2026 auf die
             // Info-Seite: Dort wird ein Rechtstext geöffnet, dort scheitert
@@ -380,7 +380,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ),
           ],
-        ),
       ),
     );
   }

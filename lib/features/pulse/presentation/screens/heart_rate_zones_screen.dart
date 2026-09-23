@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show AppBar, Icons, Scaffold;
+import 'package:flutter/material.dart' show Icons, Scaffold;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -104,18 +104,16 @@ class _HeartRateZonesScreenState extends ConsumerState<HeartRateZonesScreen> {
     final settings = ref.watch(heartRateSettingsProvider);
     final zones = settings.zones;
 
+    // Unterseitenkopf aus Board 18b, C7: Zonen betreffen Cardio, daher
+    // der Cardio-Ton — auch wenn der Weg über die Einstellungen führt.
     return Scaffold(
       backgroundColor: AtemColors.base,
-      appBar: AppBar(
-        backgroundColor: AtemColors.base,
-        title: Text(l10n.settingsZonesTitle,
-            style: AtemType.titleLarge.of(context)),
-      ),
-      body: SafeArea(
-        top: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-              AtemSpacing.screenPadding, 4, AtemSpacing.screenPadding, 40),
+      body: AtemSubpageScaffold(
+          kicker: l10n.subpageKickerZones,
+          backLabel: l10n.commonBack,
+          tone: AtemColors.tabCardio,
+          title: Text(l10n.settingsZonesTitle,
+              style: AtemType.titleLarge.of(context).copyWith(fontSize: 22)),
           children: [
             if (zones != null)
               _Set(
@@ -131,7 +129,6 @@ class _HeartRateZonesScreenState extends ConsumerState<HeartRateZonesScreen> {
                 onHrMax: _enterHrMax,
               ),
           ],
-        ),
       ),
     );
   }

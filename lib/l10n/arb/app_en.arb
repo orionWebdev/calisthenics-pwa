@@ -6177,5 +6177,17 @@
   "briefingDescribesIntendedShort": "How I want to train again",
   "@briefingDescribesIntendedShort": {
     "description": "Board 18 · Zusammenfassung Frage 8"
+  },
+  "subpageKickerSettings": "HYBRID · SETTINGS",
+  "@subpageKickerSettings": {
+    "description": "Board 18b · C7, Kicker im Unterseitenkopf"
+  },
+  "subpageKickerWeight": "HYBRID · WEIGHT",
+  "@subpageKickerWeight": {
+    "description": "Board 18b · C7, Kicker im Unterseitenkopf"
+  },
+  "subpageKickerZones": "CARDIO · ZONES",
+  "@subpageKickerZones": {
+    "description": "Board 18b · C7, Kicker im Unterseitenkopf"
   }
 }

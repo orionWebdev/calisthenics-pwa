@@ -75,9 +75,14 @@ class AtemApp extends ConsumerWidget {
           final launch = settings.arguments as WorkoutLaunch? ??
               const WorkoutLaunch(WorkoutStart.free());
           return MaterialPageRoute<void>(
-            builder: (_) => WorkoutRunnerScreen(
-              start: launch.start,
-              readiness: launch.readiness,
+            // Der Runner hat seine eigene, leise Stufe (Board 18b, B):
+            // Jede Quittung ist ein Zustand, keine Bewegung.
+            builder: (_) => AtemReceiptScope(
+              stage: AtemReceiptStage.focus,
+              child: WorkoutRunnerScreen(
+                start: launch.start,
+                readiness: launch.readiness,
+              ),
             ),
             settings: settings,
           );

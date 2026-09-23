@@ -6028,4 +6028,13 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get briefingDescribesIntendedShort => 'How I want to train again';
+
+  @override
+  String get subpageKickerSettings => 'HYBRID · SETTINGS';
+
+  @override
+  String get subpageKickerWeight => 'HYBRID · WEIGHT';
+
+  @override
+  String get subpageKickerZones => 'CARDIO · ZONES';
 }

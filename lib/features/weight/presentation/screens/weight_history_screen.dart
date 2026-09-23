@@ -35,32 +35,45 @@ class _WeightHistoryScreenState extends ConsumerState<WeightHistoryScreen> {
     final l10n = AppL10n.of(context);
     final async = ref.watch(weightSeriesProvider);
 
+    // Unterseitenkopf aus Board 18b, C7: Das Gewicht wohnt im Hybrid-Tab.
+    // Der Titel mit seinem ⓘ steht jetzt im Kopf und bleibt beim Laden
+    // stehen — er braucht keine Daten.
     return Scaffold(
       backgroundColor: AtemColors.base,
-      appBar: AppBar(backgroundColor: AtemColors.base),
-      body: SafeArea(
-        top: false,
-        child: async.when(
-          loading: () => Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AtemSpacing.screenPadding),
-            child: AtemSkeleton(
+      body: AtemSubpageScaffold(
+        kicker: l10n.subpageKickerWeight,
+        backLabel: l10n.commonBack,
+        tone: AtemColors.tabHybrid,
+        title: AtemExplainHeader(
+          title: l10n.weightBlockTitle,
+          titleStyle: AtemType.titleLarge.of(context).copyWith(fontSize: 22),
+          explanation: [
+            l10n.weightExplainBody,
+            l10n.weightExplainChange,
+            l10n.weightExplainGaps,
+            l10n.weightExplainSources,
+            l10n.weightExplainLoad,
+          ],
+        ),
+        children: [
+          async.when(
+            loading: () => AtemSkeleton(
               semanticLabel: l10n.weightLoadingA11y,
               blocks: const [
-                AtemSkeletonBlock(height: 28, radius: 8),
+                AtemSkeletonBlock(height: 48),
                 AtemSkeletonBlock(height: 140),
                 AtemSkeletonBlock(height: 180),
               ],
             ),
+            error: (_, __) => AtemErrorState(
+              title: l10n.weightHistoryTitle,
+              body: l10n.weightLoadError,
+              retryLabel: l10n.commonRetry,
+              onRetry: () => ref.invalidate(weightSeriesProvider),
+            ),
+            data: (series) => _content(context, l10n, series),
           ),
-          error: (_, __) => AtemErrorState(
-            title: l10n.weightHistoryTitle,
-            body: l10n.weightLoadError,
-            retryLabel: l10n.commonRetry,
-            onRetry: () => ref.invalidate(weightSeriesProvider),
-          ),
-          data: (series) => _content(context, l10n, series),
-        ),
+        ],
       ),
     );
   }
@@ -72,22 +85,9 @@ class _WeightHistoryScreenState extends ConsumerState<WeightHistoryScreen> {
     // Wert, nicht den ersten.
     final rows = window.entries.reversed.toList();
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(AtemSpacing.screenPadding, 0,
-          AtemSpacing.screenPadding, 40),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AtemExplainHeader(
-          title: l10n.weightBlockTitle,
-          titleStyle: AtemType.titleLarge.of(context),
-          explanation: [
-            l10n.weightExplainBody,
-            l10n.weightExplainChange,
-            l10n.weightExplainGaps,
-            l10n.weightExplainSources,
-            l10n.weightExplainLoad,
-          ],
-        ),
-        const SizedBox(height: 14),
         _RangePills(
           value: _range,
           onChanged: (range) => setState(() => _range = range),

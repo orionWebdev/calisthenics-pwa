@@ -201,22 +201,34 @@ class _AppShellState extends ConsumerState<AppShell>
                     _TabNavigator(
                       navigatorKey: _keys[AppTab.hybrid.index],
                       observer: _observers[AppTab.hybrid.index],
-                      root: const HybridScreen(),
+                      root: const AtemEntranceScope(
+                        id: 'hybrid',
+                        child: HybridScreen(),
+                      ),
                     ),
                     _TabNavigator(
                       navigatorKey: _keys[AppTab.strength.index],
                       observer: _observers[AppTab.strength.index],
-                      root: StrengthScreen(onStart: _start),
+                      root: AtemEntranceScope(
+                        id: 'strength',
+                        child: StrengthScreen(onStart: _start),
+                      ),
                     ),
                     _TabNavigator(
                       navigatorKey: _keys[AppTab.cardio.index],
                       observer: _observers[AppTab.cardio.index],
-                      root: const CardioScreen(),
+                      root: const AtemEntranceScope(
+                        id: 'cardio',
+                        child: CardioScreen(),
+                      ),
                     ),
                     _TabNavigator(
                       navigatorKey: _keys[AppTab.recovery.index],
                       observer: _observers[AppTab.recovery.index],
-                      root: const RecoveryScreen(),
+                      root: const AtemEntranceScope(
+                        id: 'recovery',
+                        child: RecoveryScreen(),
+                      ),
                     ),
                   ],
                 ),

@@ -218,7 +218,14 @@ class _ExerciseRow extends ConsumerWidget {
       if (weight != null) l10n.detailSpokenKg(_num(context, weight)),
     ].join(', ');
 
-    return Column(
+    // Aufklappen ist ein Erscheinen aus eigener Handlung: einmal je Übung
+    // und Besuch die Lichtkante (Board 18b, C6). Zuklappen hat keine.
+    return AtemEdgeSweep(
+      trigger: open,
+      when: open,
+      edgeKey: ('detailExercise', name),
+      radius: AtemRadii.statBox,
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AtemTappable(
@@ -276,10 +283,10 @@ class _ExerciseRow extends ConsumerWidget {
         ),
         AtemDisclosure(
           open: open,
-          duration: const Duration(milliseconds: 220),
           child: _Sets(summary: summary, entry: entry, label: name),
         ),
       ],
+    ),
     );
   }
 }

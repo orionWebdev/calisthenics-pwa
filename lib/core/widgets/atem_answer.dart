@@ -570,10 +570,15 @@ class AtemEdgeSweep extends StatefulWidget {
     required this.child,
     this.edgeKey,
     this.delay = Duration.zero,
+    this.when = true,
   });
 
   final Object trigger;
   final Object? edgeKey;
+
+  /// Läuft nur, wenn beim Wechsel von [trigger] auch das gilt — für
+  /// Disclosures: `trigger: open, when: open`. Zuklappen hat keine Kante.
+  final bool when;
   final double radius;
   final Duration delay;
   final Widget child;
@@ -593,7 +598,7 @@ class _AtemEdgeSweepState extends State<AtemEdgeSweep>
   @override
   void didUpdateWidget(AtemEdgeSweep old) {
     super.didUpdateWidget(old);
-    if (old.trigger == widget.trigger) return;
+    if (old.trigger == widget.trigger || !widget.when) return;
     final receipts = AtemReceiptScope.of(context);
     final touch = receipts.start(AtemReceipt.edge, key: widget.edgeKey);
     if (touch == null) return;
