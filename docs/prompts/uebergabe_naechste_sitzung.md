@@ -57,7 +57,9 @@ Du übernimmst die Arbeit an **ATEM Hybrid** (Flutter, Android). Lies zuerst, da
 
 1. ~~Boards ins Repo spiegeln~~ — erledigt am 23.09. (13, 14, 15, 17; 12 ist abgelöst).
    Offen bleibt nur der Schwanz von Board 16, siehe oben.
-2. **CI einrichten.** `.github/workflows/` gibt es nicht, obwohl beide Tore existieren und
+2. ~~CI einrichten~~ — erledigt am 23.09. (`.github/workflows/ci.yml`; was fehlt und
+   warum, steht in `docs/contracts/03-architecture.md` § CI). Ursprünglicher Auftrag:
+   **CI einrichten.** `.github/workflows/` gibt es nicht, obwohl beide Tore existieren und
    im Vertrag als „CI-Tor" beschrieben sind: `flutter analyze lib test` · `flutter test` ·
    `dart tool/check_conventions.dart` · `flutter gen-l10n && git diff --exit-code
    lib/l10n/gen`. Die Tags `render` und `debt` bleiben draussen.
